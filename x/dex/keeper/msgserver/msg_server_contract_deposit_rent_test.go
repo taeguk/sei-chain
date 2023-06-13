@@ -74,6 +74,7 @@ func TestDepositRent(t *testing.T) {
 	}
 	contractAddr, _, err := contractKeeper.Instantiate(ctx, codeId, testAccount, testAccount, []byte(GOOD_CONTRACT_INSTANTIATE), "test",
 		sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(100000))))
+	println("Contract", contractAddr.String())
 	if err != nil {
 		panic(err)
 	}
@@ -93,6 +94,21 @@ func TestDepositRent(t *testing.T) {
 	_, err = dexkeeper.GetContract(ctx, TestContractA)
 	require.NoError(t, err)
 	balance := dexkeeper.BankKeeper.GetBalance(ctx, testAccount, "usei")
+	supply := dexkeeper.BankKeeper.GetSupply(ctx, "usei")
+
+	// Ensure balance equals spply
+	allBalancesList := dexkeeper.BankKeeper.GetAccountsBalances(ctx)
+	totalUseiBalances := sdk.NewCoin("usei", sdk.ZeroInt())
+	for _, balance := range allBalancesList {
+		for _, coin := range balance.Coins {
+			if coin.Denom == "usei" {
+				totalUseiBalances = totalUseiBalances.Add(coin)
+			}
+		}
+	}
+	require.Equal(t, int64(200000000), totalUseiBalances.Amount.Int64())
+	require.Equal(t, int64(200000000), supply.Amount.Int64())
+
 	require.Equal(t, int64(89900000), balance.Amount.Int64())
 
 	handler := dex.NewHandler(dexkeeper)
@@ -105,9 +121,42 @@ func TestDepositRent(t *testing.T) {
 	_, err = dexkeeper.GetContract(ctx, TestContractA)
 	require.NoError(t, err)
 	balance = dexkeeper.BankKeeper.GetBalance(ctx, testAccount, "usei")
+
+	// Ensure total balance equals spply
+	supply = dexkeeper.BankKeeper.GetSupply(ctx, "usei")
+	allBalancesList = dexkeeper.BankKeeper.GetAccountsBalances(ctx)
+	totalUseiBalances = sdk.NewCoin("usei", sdk.ZeroInt())
+	for _, balance := range allBalancesList {
+		for _, coin := range balance.Coins {
+			if coin.Denom == "usei" {
+				totalUseiBalances = totalUseiBalances.Add(coin)
+			}
+		}
+	}
+	require.Equal(t, int64(200000000), totalUseiBalances.Amount.Int64())
+	require.Equal(t, int64(200000000), supply.Amount.Int64())
+
 	require.Equal(t, int64(89900000), balance.Amount.Int64())
+
 	balance = dexkeeper.BankKeeper.GetBalance(ctx, depositAccount, "usei")
+	supply = dexkeeper.BankKeeper.GetSupply(ctx, "usei")
 	require.Equal(t, int64(90000000), balance.Amount.Int64())
+
+	// Ensure total balance equals spply
+	supply = dexkeeper.BankKeeper.GetSupply(ctx, "usei")
+	allBalancesList = dexkeeper.BankKeeper.GetAccountsBalances(ctx)
+	totalUseiBalances = sdk.NewCoin("usei", sdk.ZeroInt())
+	for _, balance := range allBalancesList {
+		println("Address: ", balance.GetAddress().String())
+		for _, coin := range balance.Coins {
+			if coin.Denom == "usei" {
+				println("usei: ", coin.Amount.String())
+				totalUseiBalances = totalUseiBalances.Add(coin)
+			}
+		}
+	}
+	require.Equal(t, int64(200000000), totalUseiBalances.Amount.Int64())
+	require.Equal(t, int64(20000000), supply.Amount.Int64())
 
 	// deposit exceeds limit
 	_, err = handler(ctx, &types.MsgContractDepositRent{

@@ -1,0 +1,1575 @@
+{
+    "app_hash": "",
+    "app_state": {
+        "accesscontrol": {
+            "message_dependency_mapping": [],
+            "params": {},
+            "wasm_dependency_mappings": []
+        },
+        "auth": {
+            "accounts": [
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "10",
+                    "address": "sei1p7yklntcyqfqtmxmkrlgy0cj82mkhcu84mt279",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "AsqsvnPtqfIh9GpmukCuPMtLxc3KZpzUIX2W44aLPGhd"
+                    },
+                    "sequence": "1"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "3",
+                    "address": "sei1ycl47840j84eyhp6ceme37kfgmh3tkaj08y8u9",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "A45351ENeGHzm+ZKLoTJIobsNak3Fbx+RCogCwXVSltU"
+                    },
+                    "sequence": "3"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.ModuleAccount",
+                    "base_account": {
+                        "account_number": "17",
+                        "address": "sei1yl6hdjhmkf37639730gffanpzndzdpmhrn8l3z",
+                        "pub_key": null,
+                        "sequence": "0"
+                    },
+                    "name": "transfer",
+                    "permissions": [
+                        "minter",
+                        "burner"
+                    ]
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "21",
+                    "address": "sei19pjwuqsm485jrn35z4nw8pch3z4uygrsd5dr7w",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "A/Yga6WXOeDgYdT1xL1IeQFzizgPEutgT46cMMfkqmsj"
+                    },
+                    "sequence": "284597"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.ModuleAccount",
+                    "base_account": {
+                        "account_number": "0",
+                        "address": "sei19ejy8n9qsectrf4semdp9cpknflld0j6svvmtq",
+                        "pub_key": null,
+                        "sequence": "0"
+                    },
+                    "name": "tokenfactory",
+                    "permissions": [
+                        "minter",
+                        "burner"
+                    ]
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "20",
+                    "address": "sei1xk6e7pg6gz6u3ak87w09y9cmjjjjs77galksha",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "A8zlfrQO7qB4Aor7SFgUhGSQaEr7Bjo3f0b405t93wVB"
+                    },
+                    "sequence": "285701"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "7",
+                    "address": "sei18dh0yg4ws7z20h5752sxqe9kmpn34es488fdtz",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "AtQIQ7Jt0GeFS3R2v59OHhYFdF3gZzH5JguVBDkq3oC7"
+                    },
+                    "sequence": "9"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "23",
+                    "address": "sei1840sqjuhdgvwe0gemy8qs48zvamdcxuunpkd47",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "A0+CcRZ/PfVU8Y5Av3P7brBNeq83TYSlPXg/7wEsTnQ6"
+                    },
+                    "sequence": "284286"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "22",
+                    "address": "sei1gskuxnn6yh2wg8dq6lqqlx3rrkuasj5ftse0yk",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "A/xgSgKy1Ca+C7IFS8p2tDqaLU4KatuR3GnDprTRoTXO"
+                    },
+                    "sequence": "283679"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.ModuleAccount",
+                    "base_account": {
+                        "account_number": "14",
+                        "address": "sei1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3chcelk",
+                        "pub_key": null,
+                        "sequence": "0"
+                    },
+                    "name": "bonded_tokens_pool",
+                    "permissions": [
+                        "burner",
+                        "staking"
+                    ]
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "11",
+                    "address": "sei125nqd75hdnacet8mxw5l5s886qd4z2e3scfsgs",
+                    "pub_key": null,
+                    "sequence": "0"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.ModuleAccount",
+                    "base_account": {
+                        "account_number": "15",
+                        "address": "sei1tygms3xhhs3yv487phx3dw4a95jn7t7lvhygfz",
+                        "pub_key": null,
+                        "sequence": "0"
+                    },
+                    "name": "not_bonded_tokens_pool",
+                    "permissions": [
+                        "burner",
+                        "staking"
+                    ]
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "6",
+                    "address": "sei1v484jqdjulup02xe56a3g499dpxkvst2v63ykr",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "AzSGAlGZ3GaERDKhRAvUL+J23MgQd1h264v0KIcFizv+"
+                    },
+                    "sequence": "12"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.ModuleAccount",
+                    "base_account": {
+                        "account_number": "16",
+                        "address": "sei10d07y265gmmuvt4z0w9aw880jnsr700jhwznsj",
+                        "pub_key": null,
+                        "sequence": "0"
+                    },
+                    "name": "gov",
+                    "permissions": [
+                        "burner"
+                    ]
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "9",
+                    "address": "sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "A9IvVWE3CEjdx9K1Ol4SOj9a8DzPixt8f2xVDgZrBAj/"
+                    },
+                    "sequence": "3"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "5",
+                    "address": "sei1367lrsj255urah7939ew6ydaya9jwjvf24skfh",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "A2o6tSbeR95yvgS5DGq8fyBDmRFx0eL4j9tS4kRmSzrb"
+                    },
+                    "sequence": "3"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.ModuleAccount",
+                    "base_account": {
+                        "account_number": "18",
+                        "address": "sei1jgp27m8fykex4e4jtt0l7ze8q528ux2luafptg",
+                        "pub_key": null,
+                        "sequence": "0"
+                    },
+                    "name": "oracle",
+                    "permissions": []
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.ModuleAccount",
+                    "base_account": {
+                        "account_number": "13",
+                        "address": "sei1jv65s3grqf6v6jl3dp4t6c9t9rk99cd82n4207",
+                        "pub_key": null,
+                        "sequence": "0"
+                    },
+                    "name": "distribution",
+                    "permissions": []
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "2",
+                    "address": "sei1nj9annkhjr3uf3fuatcm0glhxy0z4qmmgvf4wv",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "Au2FZgNtaQBeLS6f3Tx/EPHvh/ZCcufTp7999lkC2q5t"
+                    },
+                    "sequence": "46"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.ModuleAccount",
+                    "base_account": {
+                        "account_number": "0",
+                        "address": "sei1n58mly6f7er0zs6swtetqgfqs36jaarqkj8agr",
+                        "pub_key": null,
+                        "sequence": "0"
+                    },
+                    "name": "dex",
+                    "permissions": []
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "4",
+                    "address": "sei1neel4e9pxmsyng99kfx70u3xem2u7s8ecllzdw",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "A5tjd63JSCOa0abPRD2YRwudpDIB+9+FsOqCrTqimw6i"
+                    },
+                    "sequence": "3"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "8",
+                    "address": "sei1nl629swjntpt74pe9dl9djwnr0u6tc03tytpu7",
+                    "pub_key": {
+                        "@type": "/cosmos.crypto.secp256k1.PubKey",
+                        "key": "A6ELaW2Wc9pVMUABOERB3OHw2STtFYeIDGmV7pfRkKO1"
+                    },
+                    "sequence": "39"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.BaseAccount",
+                    "account_number": "24",
+                    "address": "sei14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sh9m79m",
+                    "pub_key": null,
+                    "sequence": "0"
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.ModuleAccount",
+                    "base_account": {
+                        "account_number": "19",
+                        "address": "sei1m3h30wlvsf8llruxtpukdvsy0km2kum89akwpp",
+                        "pub_key": null,
+                        "sequence": "0"
+                    },
+                    "name": "mint",
+                    "permissions": [
+                        "minter"
+                    ]
+                },
+                {
+                    "@type": "/cosmos.auth.v1beta1.ModuleAccount",
+                    "base_account": {
+                        "account_number": "12",
+                        "address": "sei17xpfvakm2amg962yls6f84z3kell8c5la4jkdu",
+                        "pub_key": null,
+                        "sequence": "0"
+                    },
+                    "name": "fee_collector",
+                    "permissions": []
+                }
+            ],
+            "params": {
+                "max_memo_characters": "256",
+                "sig_verify_cost_ed25519": "590",
+                "sig_verify_cost_secp256k1": "1000",
+                "tx_sig_limit": "7",
+                "tx_size_cost_per_byte": "10"
+            }
+        },
+        "bank": {
+            "balances": [
+                {
+                    "address": "sei1p7yklntcyqfqtmxmkrlgy0cj82mkhcu84mt279",
+                    "coins": [
+                        {
+                            "amount": "499999999999999999950000",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1ycl47840j84eyhp6ceme37kfgmh3tkaj08y8u9",
+                    "coins": [
+                        {
+                            "amount": "500999999999998989996000",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei19pjwuqsm485jrn35z4nw8pch3z4uygrsd5dr7w",
+                    "coins": [
+                        {
+                            "amount": "1000000000",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1xk6e7pg6gz6u3ak87w09y9cmjjjjs77galksha",
+                    "coins": [
+                        {
+                            "amount": "1000000000",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei18dh0yg4ws7z20h5752sxqe9kmpn34es488fdtz",
+                    "coins": [
+                        {
+                            "amount": "999999999899965395107",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1840sqjuhdgvwe0gemy8qs48zvamdcxuunpkd47",
+                    "coins": [
+                        {
+                            "amount": "1000000000",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1gskuxnn6yh2wg8dq6lqqlx3rrkuasj5ftse0yk",
+                    "coins": [
+                        {
+                            "amount": "1000000000",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3chcelk",
+                    "coins": [
+                        {
+                            "amount": "40000005",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei125nqd75hdnacet8mxw5l5s886qd4z2e3scfsgs",
+                    "coins": [
+                        {
+                            "amount": "1000000000000000000000000",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1v484jqdjulup02xe56a3g499dpxkvst2v63ykr",
+                    "coins": [
+                        {
+                            "amount": "999999999998900996000",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe",
+                    "coins": [
+                        {
+                            "amount": "10",
+                            "denom": "factory/sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe/tokenfactory-created-denom-1686352127341"
+                        },
+                        {
+                            "amount": "999999999999999999849999",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1367lrsj255urah7939ew6ydaya9jwjvf24skfh",
+                    "coins": [
+                        {
+                            "amount": "999999999998989996000",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1jv65s3grqf6v6jl3dp4t6c9t9rk99cd82n4207",
+                    "coins": [
+                        {
+                            "amount": "1000037215392",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1nj9annkhjr3uf3fuatcm0glhxy0z4qmmgvf4wv",
+                    "coins": [
+                        {
+                            "amount": "1000000000000000067707498",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1n58mly6f7er0zs6swtetqgfqs36jaarqkj8agr",
+                    "coins": [
+                        {
+                            "amount": "100000000000",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1neel4e9pxmsyng99kfx70u3xem2u7s8ecllzdw",
+                    "coins": [
+                        {
+                            "amount": "999999999998989996000",
+                            "denom": "usei"
+                        }
+                    ]
+                },
+                {
+                    "address": "sei1nl629swjntpt74pe9dl9djwnr0u6tc03tytpu7",
+                    "coins": [
+                        {
+                            "amount": "1000000000000000008049998",
+                            "denom": "usei"
+                        }
+                    ]
+                }
+            ],
+            "denom_metadata": [
+                {
+                    "base": "factory/sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe/tokenfactory-created-denom-1686352127341",
+                    "denom_units": [
+                        {
+                            "aliases": [],
+                            "denom": "factory/sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe/tokenfactory-created-denom-1686352127341",
+                            "exponent": 0
+                        }
+                    ],
+                    "description": "",
+                    "display": "factory/sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe/tokenfactory-created-denom-1686352127341",
+                    "name": "factory/sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe/tokenfactory-created-denom-1686352127341",
+                    "symbol": "factory/sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe/tokenfactory-created-denom-1686352127341"
+                },
+                {
+                    "base": "uatom",
+                    "denom_units": [
+                        {
+                            "aliases": [
+                                "microatom"
+                            ],
+                            "denom": "uatom",
+                            "exponent": 0
+                        },
+                        {
+                            "aliases": [
+                                "milliatom"
+                            ],
+                            "denom": "matom",
+                            "exponent": 3
+                        },
+                        {
+                            "aliases": [],
+                            "denom": "atom",
+                            "exponent": 6
+                        }
+                    ],
+                    "description": "atom",
+                    "display": "atom",
+                    "name": "ATOM",
+                    "symbol": "ATOM"
+                },
+                {
+                    "base": "ueth",
+                    "denom_units": [
+                        {
+                            "aliases": [
+                                "microeth"
+                            ],
+                            "denom": "ueth",
+                            "exponent": 0
+                        },
+                        {
+                            "aliases": [
+                                "millieth"
+                            ],
+                            "denom": "meth",
+                            "exponent": 3
+                        },
+                        {
+                            "aliases": [],
+                            "denom": "eth",
+                            "exponent": 6
+                        }
+                    ],
+                    "description": "eth",
+                    "display": "eth",
+                    "name": "ETH",
+                    "symbol": "ETH"
+                }
+            ],
+            "params": {
+                "default_send_enabled": true,
+                "send_enabled": []
+            },
+            "supply": [
+                {
+                    "amount": "10",
+                    "denom": "factory/sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe/tokenfactory-created-denom-1686352127341"
+                },
+                {
+                    "amount": "5005000000000999989999999",
+                    "denom": "usei"
+                }
+            ]
+        },
+        "capability": {
+            "index": "2",
+            "owners": [
+                {
+                    "index": "1",
+                    "index_owners": {
+                        "owners": [
+                            {
+                                "module": "ibc",
+                                "name": "ports/transfer"
+                            },
+                            {
+                                "module": "transfer",
+                                "name": "ports/transfer"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "crisis": {
+            "constant_fee": {
+                "amount": "1000",
+                "denom": "usei"
+            }
+        },
+        "dex": {
+            "contractState": [
+                {
+                    "contractInfo": {
+                        "codeId": "1",
+                        "contractAddr": "sei14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sh9m79m",
+                        "creator": "sei18dh0yg4ws7z20h5752sxqe9kmpn34es488fdtz",
+                        "dependencies": [],
+                        "needHook": false,
+                        "needOrderMatching": true,
+                        "numIncomingDependencies": "0",
+                        "rentBalance": "100000000000",
+                        "suspended": false,
+                        "suspensionReason": ""
+                    },
+                    "longBookList": [],
+                    "pairList": [
+                        {
+                            "assetDenom": "ATOM",
+                            "priceDenom": "SEI",
+                            "priceTicksize": "0.000000100000000000",
+                            "quantityTicksize": "0.000000100000000000"
+                        }
+                    ],
+                    "priceList": [
+                        {
+                            "pricePair": {
+                                "assetDenom": "ATOM",
+                                "priceDenom": "SEI",
+                                "priceTicksize": "0.000000100000000000",
+                                "quantityTicksize": "0.000000100000000000"
+                            },
+                            "prices": []
+                        }
+                    ],
+                    "shortBookList": [],
+                    "triggeredOrdersList": []
+                }
+            ],
+            "lastEpoch": "4618",
+            "params": {
+                "begin_block_gas_limit": "200000000",
+                "contract_unsuspend_cost": "1000000",
+                "default_gas_per_cancel": "53000",
+                "default_gas_per_order": "55000",
+                "end_block_gas_limit": "1000000000",
+                "gas_allowance_per_settlement": "10000",
+                "max_order_per_price": "10000",
+                "max_pairs_per_contract": "100",
+                "min_processable_rent": "100000",
+                "min_rent_deposit": "10000000",
+                "order_book_entries_per_load": "10",
+                "price_snapshot_retention": "86400",
+                "sudo_call_gas_price": "0.100000000000000000"
+            }
+        },
+        "distribution": {
+            "delegator_starting_infos": [
+                {
+                    "delegator_address": "sei1ycl47840j84eyhp6ceme37kfgmh3tkaj08y8u9",
+                    "starting_info": {
+                        "height": "0",
+                        "previous_period": "1",
+                        "stake": "10000000.000000000000000000"
+                    },
+                    "validator_address": "seivaloper1ycl47840j84eyhp6ceme37kfgmh3tkaj3g4fa4"
+                },
+                {
+                    "delegator_address": "sei1v484jqdjulup02xe56a3g499dpxkvst2v63ykr",
+                    "starting_info": {
+                        "height": "0",
+                        "previous_period": "1",
+                        "stake": "10000000.000000000000000000"
+                    },
+                    "validator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn"
+                },
+                {
+                    "delegator_address": "sei1nj9annkhjr3uf3fuatcm0glhxy0z4qmmgvf4wv",
+                    "starting_info": {
+                        "height": "29311",
+                        "previous_period": "4",
+                        "stake": "1.000000000000000000"
+                    },
+                    "validator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn"
+                },
+                {
+                    "delegator_address": "sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe",
+                    "starting_info": {
+                        "height": "21934",
+                        "previous_period": "2",
+                        "stake": "1.000000000000000000"
+                    },
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "delegator_address": "sei1367lrsj255urah7939ew6ydaya9jwjvf24skfh",
+                    "starting_info": {
+                        "height": "0",
+                        "previous_period": "1",
+                        "stake": "10000000.000000000000000000"
+                    },
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "delegator_address": "sei1nj9annkhjr3uf3fuatcm0glhxy0z4qmmgvf4wv",
+                    "starting_info": {
+                        "height": "29307",
+                        "previous_period": "5",
+                        "stake": "1.000000000000000000"
+                    },
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "delegator_address": "sei1nl629swjntpt74pe9dl9djwnr0u6tc03tytpu7",
+                    "starting_info": {
+                        "height": "29310",
+                        "previous_period": "6",
+                        "stake": "1.000000000000000000"
+                    },
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "delegator_address": "sei1neel4e9pxmsyng99kfx70u3xem2u7s8ecllzdw",
+                    "starting_info": {
+                        "height": "0",
+                        "previous_period": "1",
+                        "stake": "10000000.000000000000000000"
+                    },
+                    "validator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7"
+                },
+                {
+                    "delegator_address": "sei1nl629swjntpt74pe9dl9djwnr0u6tc03tytpu7",
+                    "starting_info": {
+                        "height": "29305",
+                        "previous_period": "2",
+                        "stake": "1.000000000000000000"
+                    },
+                    "validator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7"
+                }
+            ],
+            "delegator_withdraw_infos": [],
+            "fee_pool": {
+                "community_pool": [
+                    {
+                        "amount": "0.874930968465405828",
+                        "denom": "usei"
+                    }
+                ]
+            },
+            "outstanding_rewards": [
+                {
+                    "outstanding_rewards": [
+                        {
+                            "amount": "250006497268.980769230750000000",
+                            "denom": "usei"
+                        }
+                    ],
+                    "validator_address": "seivaloper1ycl47840j84eyhp6ceme37kfgmh3tkaj3g4fa4"
+                },
+                {
+                    "outstanding_rewards": [
+                        {
+                            "amount": "250017731084.670030464650000000",
+                            "denom": "usei"
+                        }
+                    ],
+                    "validator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn"
+                },
+                {
+                    "outstanding_rewards": [
+                        {
+                            "amount": "250006489768.493500105384594172",
+                            "denom": "usei"
+                        }
+                    ],
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "outstanding_rewards": [
+                        {
+                            "amount": "250006497268.980769230750000000",
+                            "denom": "usei"
+                        }
+                    ],
+                    "validator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7"
+                }
+            ],
+            "params": {
+                "base_proposer_reward": "0.000000000000000000",
+                "bonus_proposer_reward": "0.000000000000000000",
+                "community_tax": "0.000000000000000000",
+                "withdraw_addr_enabled": true
+            },
+            "previous_proposer": "seivalcons149kr2mltxxkym3hzmemf0sh5lg9w5tjm23c5qg",
+            "validator_accumulated_commissions": [
+                {
+                    "accumulated": {
+                        "commission": [
+                            {
+                                "amount": "25000649726.898076923075000000",
+                                "denom": "usei"
+                            }
+                        ]
+                    },
+                    "validator_address": "seivaloper1ycl47840j84eyhp6ceme37kfgmh3tkaj3g4fa4"
+                },
+                {
+                    "accumulated": {
+                        "commission": [
+                            {
+                                "amount": "25005457419.205769230765000000",
+                                "denom": "usei"
+                            }
+                        ]
+                    },
+                    "validator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn"
+                },
+                {
+                    "accumulated": {
+                        "commission": [
+                            {
+                                "amount": "25000649726.898076923075000000",
+                                "denom": "usei"
+                            }
+                        ]
+                    },
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "accumulated": {
+                        "commission": [
+                            {
+                                "amount": "25000649726.898076923075000000",
+                                "denom": "usei"
+                            }
+                        ]
+                    },
+                    "validator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7"
+                }
+            ],
+            "validator_current_rewards": [
+                {
+                    "rewards": {
+                        "period": "2",
+                        "rewards": [
+                            {
+                                "amount": "225005847542.082692307675000000",
+                                "denom": "usei"
+                            }
+                        ]
+                    },
+                    "validator_address": "seivaloper1ycl47840j84eyhp6ceme37kfgmh3tkaj3g4fa4"
+                },
+                {
+                    "rewards": {
+                        "period": "5",
+                        "rewards": [
+                            {
+                                "amount": "75000911249.925000000000000000",
+                                "denom": "usei"
+                            }
+                        ]
+                    },
+                    "validator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn"
+                },
+                {
+                    "rewards": {
+                        "period": "7",
+                        "rewards": [
+                            {
+                                "amount": "75000922499.925000000000000000",
+                                "denom": "usei"
+                            }
+                        ]
+                    },
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "rewards": {
+                        "period": "3",
+                        "rewards": [
+                            {
+                                "amount": "75000944999.925000000000000000",
+                                "denom": "usei"
+                            }
+                        ]
+                    },
+                    "validator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7"
+                }
+            ],
+            "validator_historical_rewards": [
+                {
+                    "period": "1",
+                    "rewards": {
+                        "cumulative_reward_ratio": [],
+                        "reference_count": 2
+                    },
+                    "validator_address": "seivaloper1ycl47840j84eyhp6ceme37kfgmh3tkaj3g4fa4"
+                },
+                {
+                    "period": "1",
+                    "rewards": {
+                        "cumulative_reward_ratio": [],
+                        "reference_count": 1
+                    },
+                    "validator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn"
+                },
+                {
+                    "period": "4",
+                    "rewards": {
+                        "cumulative_reward_ratio": [
+                            {
+                                "amount": "15001.136241553926123380",
+                                "denom": "usei"
+                            }
+                        ],
+                        "reference_count": 2
+                    },
+                    "validator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn"
+                },
+                {
+                    "period": "1",
+                    "rewards": {
+                        "cumulative_reward_ratio": [],
+                        "reference_count": 1
+                    },
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "period": "2",
+                    "rewards": {
+                        "cumulative_reward_ratio": [
+                            {
+                                "amount": "7500.003734992500000000",
+                                "denom": "usei"
+                            }
+                        ],
+                        "reference_count": 1
+                    },
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "period": "5",
+                    "rewards": {
+                        "cumulative_reward_ratio": [
+                            {
+                                "amount": "15000.489879118427905637",
+                                "denom": "usei"
+                            }
+                        ],
+                        "reference_count": 1
+                    },
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "period": "6",
+                    "rewards": {
+                        "cumulative_reward_ratio": [
+                            {
+                                "amount": "15000.491004118202905681",
+                                "denom": "usei"
+                            }
+                        ],
+                        "reference_count": 2
+                    },
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "period": "1",
+                    "rewards": {
+                        "cumulative_reward_ratio": [],
+                        "reference_count": 1
+                    },
+                    "validator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7"
+                },
+                {
+                    "period": "2",
+                    "rewards": {
+                        "cumulative_reward_ratio": [
+                            {
+                                "amount": "15000.490254215769230767",
+                                "denom": "usei"
+                            }
+                        ],
+                        "reference_count": 2
+                    },
+                    "validator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7"
+                }
+            ],
+            "validator_slash_events": []
+        },
+        "epoch": {
+            "epoch": {
+                "current_epoch": "4618",
+                "current_epoch_height": "566588",
+                "current_epoch_start_time": "2023-06-13T01:31:14.882589833Z",
+                "epoch_duration": "60s",
+                "genesis_time": "2023-06-09T20:03:46.674669057Z"
+            },
+            "params": {}
+        },
+        "evidence": {
+            "evidence": []
+        },
+        "feegrant": {
+            "allowances": []
+        },
+        "genutil": {
+            "gen_txs": []
+        },
+        "gov": {
+            "deposit_params": {
+                "max_deposit_period": "172800s",
+                "min_deposit": [
+                    {
+                        "amount": "10000000",
+                        "denom": "usei"
+                    }
+                ],
+                "min_expedited_deposit": [
+                    {
+                        "amount": "20000000",
+                        "denom": "usei"
+                    }
+                ]
+            },
+            "deposits": [],
+            "proposals": [
+                {
+                    "content": {
+                        "@type": "/cosmwasm.wasm.v1.PinCodesProposal",
+                        "code_ids": [
+                            "1"
+                        ],
+                        "description": "Pin code 1",
+                        "title": "Pin code 1"
+                    },
+                    "deposit_end_time": "2023-06-11T23:30:26.904859261Z",
+                    "final_tally_result": {
+                        "abstain": "0",
+                        "no": "0",
+                        "no_with_veto": "0",
+                        "yes": "0"
+                    },
+                    "is_expedited": false,
+                    "proposal_id": "1",
+                    "status": "PROPOSAL_STATUS_REJECTED",
+                    "submit_time": "2023-06-09T23:30:26.904859261Z",
+                    "total_deposit": [
+                        {
+                            "amount": "10000000",
+                            "denom": "usei"
+                        }
+                    ],
+                    "voting_end_time": "2023-06-09T23:32:29.810137203Z",
+                    "voting_start_time": "2023-06-09T23:30:29.810137203Z"
+                }
+            ],
+            "starting_proposal_id": "2",
+            "tally_params": {
+                "expedited_quorum": "0.667000000000000000",
+                "expedited_threshold": "0.667000000000000000",
+                "quorum": "0.334000000000000000",
+                "threshold": "0.500000000000000000",
+                "veto_threshold": "0.334000000000000000"
+            },
+            "votes": [],
+            "voting_params": {
+                "expedited_voting_period": "60s",
+                "voting_period": "120s"
+            }
+        },
+        "ibc": {
+            "channel_genesis": {
+                "ack_sequences": [],
+                "acknowledgements": [],
+                "channels": [],
+                "commitments": [],
+                "next_channel_sequence": "0",
+                "receipts": [],
+                "recv_sequences": [],
+                "send_sequences": []
+            },
+            "client_genesis": {
+                "clients": [],
+                "clients_consensus": [],
+                "clients_metadata": [],
+                "create_localhost": false,
+                "next_client_sequence": "0",
+                "params": {
+                    "allowed_clients": [
+                        "06-solomachine",
+                        "07-tendermint"
+                    ]
+                }
+            },
+            "connection_genesis": {
+                "client_connection_paths": [],
+                "connections": [],
+                "next_connection_sequence": "0",
+                "params": {
+                    "max_expected_time_per_block": "30000000000"
+                }
+            }
+        },
+        "mint": {
+            "minter": {
+                "denom": "usei",
+                "end_date": "2023-06-12",
+                "last_mint_amount": "333333333333",
+                "last_mint_date": "2023-06-11",
+                "last_mint_height": "204173",
+                "remaining_mint_amount": "0",
+                "start_date": "2023-06-09",
+                "total_mint_amount": "999999999999"
+            },
+            "params": {
+                "mint_denom": "usei",
+                "token_release_schedule": [
+                    {
+                        "end_date": "2023-06-12",
+                        "start_date": "2023-06-09",
+                        "token_release_amount": "999999999999"
+                    },
+                    {
+                        "end_date": "2024-06-08",
+                        "start_date": "2023-06-14",
+                        "token_release_amount": "100000000000000"
+                    }
+                ]
+            }
+        },
+        "oracle": {
+            "aggregate_exchange_rate_votes": [],
+            "exchange_rates": [
+                {
+                    "denom": "uatom",
+                    "exchange_rate": "8.781357232839317720"
+                },
+                {
+                    "denom": "ueth",
+                    "exchange_rate": "1742.263484464351862805"
+                }
+            ],
+            "feeder_delegations": [
+                {
+                    "feeder_address": "sei1xk6e7pg6gz6u3ak87w09y9cmjjjjs77galksha",
+                    "validator_address": "seivaloper1ycl47840j84eyhp6ceme37kfgmh3tkaj3g4fa4"
+                },
+                {
+                    "feeder_address": "sei1gskuxnn6yh2wg8dq6lqqlx3rrkuasj5ftse0yk",
+                    "validator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn"
+                },
+                {
+                    "feeder_address": "sei1840sqjuhdgvwe0gemy8qs48zvamdcxuunpkd47",
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "feeder_address": "sei19pjwuqsm485jrn35z4nw8pch3z4uygrsd5dr7w",
+                    "validator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7"
+                }
+            ],
+            "params": {
+                "lookback_duration": "3600",
+                "min_valid_per_window": "0.050000000000000000",
+                "reward_band": "0.020000000000000000",
+                "slash_fraction": "0.000000000000000000",
+                "slash_window": "756000",
+                "vote_period": "1",
+                "vote_threshold": "0.500000000000000000",
+                "whitelist": [
+                    {
+                        "name": "uatom"
+                    },
+                    {
+                        "name": "ueth"
+                    }
+                ]
+            },
+            "penalty_counters": [
+                {
+                    "validator_address": "seivaloper1ycl47840j84eyhp6ceme37kfgmh3tkaj3g4fa4",
+                    "vote_penalty_counter": {
+                        "abstain_count": "280937",
+                        "miss_count": "0",
+                        "success_count": "285703"
+                    }
+                },
+                {
+                    "validator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn",
+                    "vote_penalty_counter": {
+                        "abstain_count": "282959",
+                        "miss_count": "0",
+                        "success_count": "283681"
+                    }
+                },
+                {
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8",
+                    "vote_penalty_counter": {
+                        "abstain_count": "282352",
+                        "miss_count": "0",
+                        "success_count": "284288"
+                    }
+                },
+                {
+                    "validator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7",
+                    "vote_penalty_counter": {
+                        "abstain_count": "282041",
+                        "miss_count": "0",
+                        "success_count": "284599"
+                    }
+                }
+            ],
+            "price_snapshots": []
+        },
+        "params": null,
+        "slashing": {
+            "missed_blocks": [
+                {
+                    "address": "seivalcons1ra0j2vs478hdmp6vtcpj3n4cfs7nqnnjklww5w",
+                    "missed_blocks": [],
+                    "window_size": "10000"
+                },
+                {
+                    "address": "seivalcons1nuwxze707ef6rxcv74pjdrm9ff8s49f6x6fgrg",
+                    "missed_blocks": [],
+                    "window_size": "10000"
+                },
+                {
+                    "address": "seivalcons149kr2mltxxkym3hzmemf0sh5lg9w5tjm23c5qg",
+                    "missed_blocks": [],
+                    "window_size": "10000"
+                },
+                {
+                    "address": "seivalcons1kpfjcs3pruwgpamf97r2tqpccn3tykua8ft86x",
+                    "missed_blocks": [],
+                    "window_size": "10000"
+                }
+            ],
+            "params": {
+                "downtime_jail_duration": "600s",
+                "min_signed_per_window": "0.050000000000000000",
+                "signed_blocks_window": "10000",
+                "slash_fraction_double_sign": "0.000000000000000000",
+                "slash_fraction_downtime": "0.000000000000000000"
+            },
+            "signing_infos": [
+                {
+                    "address": "seivalcons1ra0j2vs478hdmp6vtcpj3n4cfs7nqnnjklww5w",
+                    "validator_signing_info": {
+                        "address": "seivalcons1ra0j2vs478hdmp6vtcpj3n4cfs7nqnnjklww5w",
+                        "index_offset": "6638",
+                        "jailed_until": "1970-01-01T00:00:00Z",
+                        "missed_blocks_counter": "12",
+                        "start_height": "0",
+                        "tombstoned": false
+                    }
+                },
+                {
+                    "address": "seivalcons1nuwxze707ef6rxcv74pjdrm9ff8s49f6x6fgrg",
+                    "validator_signing_info": {
+                        "address": "seivalcons1nuwxze707ef6rxcv74pjdrm9ff8s49f6x6fgrg",
+                        "index_offset": "6638",
+                        "jailed_until": "1970-01-01T00:00:00Z",
+                        "missed_blocks_counter": "4",
+                        "start_height": "0",
+                        "tombstoned": false
+                    }
+                },
+                {
+                    "address": "seivalcons149kr2mltxxkym3hzmemf0sh5lg9w5tjm23c5qg",
+                    "validator_signing_info": {
+                        "address": "seivalcons149kr2mltxxkym3hzmemf0sh5lg9w5tjm23c5qg",
+                        "index_offset": "6638",
+                        "jailed_until": "1970-01-01T00:00:00Z",
+                        "missed_blocks_counter": "10",
+                        "start_height": "0",
+                        "tombstoned": false
+                    }
+                },
+                {
+                    "address": "seivalcons1kpfjcs3pruwgpamf97r2tqpccn3tykua8ft86x",
+                    "validator_signing_info": {
+                        "address": "seivalcons1kpfjcs3pruwgpamf97r2tqpccn3tykua8ft86x",
+                        "index_offset": "6638",
+                        "jailed_until": "1970-01-01T00:00:00Z",
+                        "missed_blocks_counter": "11",
+                        "start_height": "0",
+                        "tombstoned": false
+                    }
+                }
+            ]
+        },
+        "staking": {
+            "delegations": [
+                {
+                    "delegator_address": "sei1ycl47840j84eyhp6ceme37kfgmh3tkaj08y8u9",
+                    "shares": "10000000.000000000000000000",
+                    "validator_address": "seivaloper1ycl47840j84eyhp6ceme37kfgmh3tkaj3g4fa4"
+                },
+                {
+                    "delegator_address": "sei1v484jqdjulup02xe56a3g499dpxkvst2v63ykr",
+                    "shares": "10000000.000000000000000000",
+                    "validator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn"
+                },
+                {
+                    "delegator_address": "sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe",
+                    "shares": "1.000000000000000000",
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "delegator_address": "sei1367lrsj255urah7939ew6ydaya9jwjvf24skfh",
+                    "shares": "10000000.000000000000000000",
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "delegator_address": "sei1nj9annkhjr3uf3fuatcm0glhxy0z4qmmgvf4wv",
+                    "shares": "1.000000000000000000",
+                    "validator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn"
+                },
+                {
+                    "delegator_address": "sei1nj9annkhjr3uf3fuatcm0glhxy0z4qmmgvf4wv",
+                    "shares": "1.000000000000000000",
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "delegator_address": "sei1neel4e9pxmsyng99kfx70u3xem2u7s8ecllzdw",
+                    "shares": "10000000.000000000000000000",
+                    "validator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7"
+                },
+                {
+                    "delegator_address": "sei1nl629swjntpt74pe9dl9djwnr0u6tc03tytpu7",
+                    "shares": "1.000000000000000000",
+                    "validator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8"
+                },
+                {
+                    "delegator_address": "sei1nl629swjntpt74pe9dl9djwnr0u6tc03tytpu7",
+                    "shares": "1.000000000000000000",
+                    "validator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7"
+                }
+            ],
+            "exported": true,
+            "last_total_power": "40",
+            "last_validator_powers": [
+                {
+                    "address": "seivaloper1ycl47840j84eyhp6ceme37kfgmh3tkaj3g4fa4",
+                    "power": "10"
+                },
+                {
+                    "address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn",
+                    "power": "10"
+                },
+                {
+                    "address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8",
+                    "power": "10"
+                },
+                {
+                    "address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7",
+                    "power": "10"
+                }
+            ],
+            "params": {
+                "bond_denom": "usei",
+                "historical_entries": 10000,
+                "max_entries": 7,
+                "max_validators": 50,
+                "max_voting_power_enforcement_threshold": "1000000",
+                "max_voting_power_ratio": "0.200000000000000000",
+                "min_commission_rate": "0.050000000000000000",
+                "unbonding_time": "86400s"
+            },
+            "redelegations": [],
+            "unbonding_delegations": [],
+            "validators": [
+                {
+                    "commission": {
+                        "commission_rates": {
+                            "max_change_rate": "0.010000000000000000",
+                            "max_rate": "0.200000000000000000",
+                            "rate": "0.100000000000000000"
+                        },
+                        "update_time": "2023-06-09T20:03:46.675501927Z"
+                    },
+                    "consensus_pubkey": {
+                        "@type": "/cosmos.crypto.ed25519.PubKey",
+                        "key": "FVGLU60MWp0W566Zc9Stl9+JRZSq/E92jTEAxV1EOB8="
+                    },
+                    "delegator_shares": "10000000.000000000000000000",
+                    "description": {
+                        "details": "",
+                        "identity": "",
+                        "moniker": "sei-node-2 (sei-loadtest-testnet)",
+                        "security_contact": "",
+                        "website": ""
+                    },
+                    "jailed": false,
+                    "min_self_delegation": "1",
+                    "operator_address": "seivaloper1ycl47840j84eyhp6ceme37kfgmh3tkaj3g4fa4",
+                    "status": "BOND_STATUS_BONDED",
+                    "tokens": "10000000",
+                    "unbonding_height": "0",
+                    "unbonding_time": "1970-01-01T00:00:00Z"
+                },
+                {
+                    "commission": {
+                        "commission_rates": {
+                            "max_change_rate": "0.010000000000000000",
+                            "max_rate": "0.200000000000000000",
+                            "rate": "0.100000000000000000"
+                        },
+                        "update_time": "2023-06-09T20:03:46.675501927Z"
+                    },
+                    "consensus_pubkey": {
+                        "@type": "/cosmos.crypto.ed25519.PubKey",
+                        "key": "m6RjaZtqpE9vG55mTWbuXfbnB/qlXhZFz3IjMenFkso="
+                    },
+                    "delegator_shares": "10000001.000000000000000000",
+                    "description": {
+                        "details": "",
+                        "identity": "",
+                        "moniker": "sei-node-0 (sei-loadtest-testnet)",
+                        "security_contact": "",
+                        "website": ""
+                    },
+                    "jailed": false,
+                    "min_self_delegation": "1",
+                    "operator_address": "seivaloper1v484jqdjulup02xe56a3g499dpxkvst2j4q2hn",
+                    "status": "BOND_STATUS_BONDED",
+                    "tokens": "10000001",
+                    "unbonding_height": "0",
+                    "unbonding_time": "1970-01-01T00:00:00Z"
+                },
+                {
+                    "commission": {
+                        "commission_rates": {
+                            "max_change_rate": "0.010000000000000000",
+                            "max_rate": "0.200000000000000000",
+                            "rate": "0.100000000000000000"
+                        },
+                        "update_time": "2023-06-09T20:03:46.675501927Z"
+                    },
+                    "consensus_pubkey": {
+                        "@type": "/cosmos.crypto.ed25519.PubKey",
+                        "key": "JMLSYN/hUjZ+X+nPco4QEgULZlnFwPJ2lR5p1czEj+c="
+                    },
+                    "delegator_shares": "10000003.000000000000000000",
+                    "description": {
+                        "details": "",
+                        "identity": "",
+                        "moniker": "sei-node-1 (sei-loadtest-testnet)",
+                        "security_contact": "",
+                        "website": ""
+                    },
+                    "jailed": false,
+                    "min_self_delegation": "1",
+                    "operator_address": "seivaloper1367lrsj255urah7939ew6ydaya9jwjvf56pcg8",
+                    "status": "BOND_STATUS_BONDED",
+                    "tokens": "10000003",
+                    "unbonding_height": "0",
+                    "unbonding_time": "1970-01-01T00:00:00Z"
+                },
+                {
+                    "commission": {
+                        "commission_rates": {
+                            "max_change_rate": "0.010000000000000000",
+                            "max_rate": "0.200000000000000000",
+                            "rate": "0.100000000000000000"
+                        },
+                        "update_time": "2023-06-09T20:03:46.675501927Z"
+                    },
+                    "consensus_pubkey": {
+                        "@type": "/cosmos.crypto.ed25519.PubKey",
+                        "key": "XLHGlTF5U8n34yefdt/64i9ZwHcemRpTFA0z7xFvCeo="
+                    },
+                    "delegator_shares": "10000001.000000000000000000",
+                    "description": {
+                        "details": "",
+                        "identity": "",
+                        "moniker": "sei-node-3 (sei-loadtest-testnet)",
+                        "security_contact": "",
+                        "website": ""
+                    },
+                    "jailed": false,
+                    "min_self_delegation": "1",
+                    "operator_address": "seivaloper1neel4e9pxmsyng99kfx70u3xem2u7s8exswvv7",
+                    "status": "BOND_STATUS_BONDED",
+                    "tokens": "10000001",
+                    "unbonding_height": "0",
+                    "unbonding_time": "1970-01-01T00:00:00Z"
+                }
+            ]
+        },
+        "tokenfactory": {
+            "factory_denoms": [
+                {
+                    "authority_metadata": {
+                        "admin": "sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe"
+                    },
+                    "denom": "factory/sei13q3f0fqrxsnldwwp66urc28rusp0e32pnakjhe/tokenfactory-created-denom-1686352127341"
+                }
+            ],
+            "params": {}
+        },
+        "transfer": {
+            "denom_traces": [],
+            "params": {
+                "receive_enabled": true,
+                "send_enabled": true
+            },
+            "port_id": "transfer"
+        },
+        "upgrade": {},
+        "vesting": {},
+        "wasm": {
+            "codes": [],
+            "contracts": [],
+            "gen_msgs": [],
+            "params": {
+                "code_upload_access": {
+                    "address": "",
+                    "permission": "Everybody"
+                },
+                "instantiate_default_permission": "Everybody"
+            },
+            "sequences": [
+                {
+                    "id_key": "BGxhc3RDb2RlSWQ=",
+                    "value": "2"
+                },
+                {
+                    "id_key": "BGxhc3RDb250cmFjdElk",
+                    "value": "2"
+                }
+            ]
+        }
+    },
+    "chain_id": "psu-test-5",
+    "consensus_params": {
+        "abci": {
+            "recheck_tx": false,
+            "vote_extensions_enable_height": 0
+        },
+        "block": {
+            "max_bytes": "22020096",
+            "max_gas": "35000000"
+        },
+        "evidence": {
+            "max_age_duration": "172800000000000",
+            "max_age_num_blocks": "100000",
+            "max_bytes": "1048576"
+        },
+        "synchrony": {
+            "message_delay": "0",
+            "precision": "0"
+        },
+        "timeout": {
+            "bypass_commit_timeout": false,
+            "commit": "0",
+            "propose": "0",
+            "propose_delta": "0",
+            "vote": "0",
+            "vote_delta": "0"
+        },
+        "validator": {
+            "pub_key_types": [
+                "ed25519"
+            ]
+        },
+        "version": {
+            "app_version": "0"
+        }
+    },
+    "genesis_time": "2023-06-09T20:03:46.675501927Z",
+    "initial_height": "566641",
+    "validators": [
+        {
+            "address": "9F1C6167CFF653A19B0CF543268F654A4F0A953A",
+            "name": "sei-node-2 (sei-loadtest-testnet)",
+            "power": "10",
+            "pub_key": {
+                "type": "tendermint/PubKeyEd25519",
+                "value": "FVGLU60MWp0W566Zc9Stl9+JRZSq/E92jTEAxV1EOB8="
+            }
+        },
+        {
+            "address": "1F5F253215F1EEDD874C5E0328CEB84C3D304E72",
+            "name": "sei-node-0 (sei-loadtest-testnet)",
+            "power": "10",
+            "pub_key": {
+                "type": "tendermint/PubKeyEd25519",
+                "value": "m6RjaZtqpE9vG55mTWbuXfbnB/qlXhZFz3IjMenFkso="
+            }
+        },
+        {
+            "address": "A96C356FEB31AC4DC6E2DE7697C2F4FA0AEA2E5B",
+            "name": "sei-node-1 (sei-loadtest-testnet)",
+            "power": "10",
+            "pub_key": {
+                "type": "tendermint/PubKeyEd25519",
+                "value": "JMLSYN/hUjZ+X+nPco4QEgULZlnFwPJ2lR5p1czEj+c="
+            }
+        },
+        {
+            "address": "B0532C42211F1C80F7692F86A58038C4E2B25B9D",
+            "name": "sei-node-3 (sei-loadtest-testnet)",
+            "power": "10",
+            "pub_key": {
+                "type": "tendermint/PubKeyEd25519",
+                "value": "XLHGlTF5U8n34yefdt/64i9ZwHcemRpTFA0z7xFvCeo="
+            }
+        }
+    ]
+}
