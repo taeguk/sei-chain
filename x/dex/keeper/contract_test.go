@@ -20,9 +20,38 @@ func TestChargeRentForGas(t *testing.T) {
 		CodeId:       1,
 		RentBalance:  1000000,
 	})
+
+	supply := keeper.BankKeeper.GetSupply(ctx, "usei")
+	allBalancesList := keeper.BankKeeper.GetAccountsBalances(ctx)
+	totalUseiBalances := sdk.NewCoin("usei", sdk.ZeroInt())
+	for _, balance := range allBalancesList {
+		println("Address: ", balance.GetAddress().String())
+		for _, coin := range balance.Coins {
+			if coin.Denom == "usei" {
+				println("usei: ", coin.Amount.String())
+				totalUseiBalances = totalUseiBalances.Add(coin)
+			}
+		}
+	}
+	require.Equal(t, int64(200000000), totalUseiBalances.Amount.Int64())
+	require.Equal(t, int64(20000000), supply.Amount.Int64())
 	require.Nil(t, err)
 	err = keeper.ChargeRentForGas(ctx, keepertest.TestContract, 5000000, 0)
 	require.Nil(t, err)
+	supply = keeper.BankKeeper.GetSupply(ctx, "usei")
+	allBalancesList = keeper.BankKeeper.GetAccountsBalances(ctx)
+	totalUseiBalances = sdk.NewCoin("usei", sdk.ZeroInt())
+	for _, balance := range allBalancesList {
+		println("Address: ", balance.GetAddress().String())
+		for _, coin := range balance.Coins {
+			if coin.Denom == "usei" {
+				println("usei: ", coin.Amount.String())
+				totalUseiBalances = totalUseiBalances.Add(coin)
+			}
+		}
+	}
+	require.Equal(t, int64(200000000), totalUseiBalances.Amount.Int64())
+	require.Equal(t, int64(20000000), supply.Amount.Int64())
 	contract, err := keeper.GetContract(ctx, keepertest.TestContract)
 	require.Nil(t, err)
 	require.Equal(t, uint64(500000), contract.RentBalance)

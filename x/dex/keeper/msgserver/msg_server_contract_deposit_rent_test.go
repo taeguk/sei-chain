@@ -79,6 +79,16 @@ func TestDepositRent(t *testing.T) {
 		panic(err)
 	}
 
+	// Deposit should've been deposited to the dex module account
+	require.Equal(t,
+		dexkeeper.BankKeeper.GetBalance(ctx, testAccount, "usei"),
+		sdk.NewCoin("usei", sdk.NewInt(99900000)),
+	)
+	require.Equal(t,
+		dexkeeper.BankKeeper.GetBalance(ctx, dexkeeper.AccountKeeper.GetModuleAddress("dex"), "usei"),
+		sdk.NewCoin("usei", sdk.NewInt(100000)),
+	)
+
 	server := msgserver.NewMsgServerImpl(dexkeeper)
 	contract := types.ContractInfoV2{
 		CodeId:       codeId,
@@ -121,6 +131,8 @@ func TestDepositRent(t *testing.T) {
 	_, err = dexkeeper.GetContract(ctx, TestContractA)
 	require.NoError(t, err)
 	balance = dexkeeper.BankKeeper.GetBalance(ctx, testAccount, "usei")
+
+	dexkeeper.ChargeRentForGas(ctx, TestContractA, 1000000, 10000)
 
 	// Ensure total balance equals spply
 	supply = dexkeeper.BankKeeper.GetSupply(ctx, "usei")
