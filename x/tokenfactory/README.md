@@ -100,6 +100,22 @@ message MsgChangeAdmin {
 
 - Check that sender of the message is the admin of denom
 - Modify `AuthorityMetadata` state entry to change the admin of the denom
+### SetDenomMetadata
+
+Setting of metadata for a specific denom is only allowed for the admin of the denom.
+It allows the overwriting of the denom metadata in the bank module.
+
+```protobuf
+message MsgSetDenomMetadata {
+  string sender = 1 [ (gogoproto.moretags) = "yaml:\"sender\"" ];
+  cosmos.bank.v1beta1.Metadata metadata = 2 [ (gogoproto.moretags) = "yaml:\"metadata\"", (gogoproto.nullable)   = false ];
+}
+```
+
+**State Modifications:**
+
+- Check that sender of the message is the admin of denom
+- Overwrites the denom metadata in bank module to new metadata
 
 ## Tokenfactory Denom Restrictions
 

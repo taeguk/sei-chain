@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	"github.com/sei-protocol/sei-chain/x/tokenfactory/types"
 )
@@ -160,6 +161,135 @@ func (suite *KeeperTestSuite) TestChangeAdminDenom() {
 				} else {
 					suite.Require().Error(err)
 				}
+			}
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestSetDenomMetaData() {
+	// setup test
+	s.SetupTest()
+	s.CreateDefaultDenom()
+
+	for _, tc := range []struct {
+		desc                string
+		msgSetDenomMetadata types.MsgSetDenomMetadata
+		expectedPass        bool
+	}{
+		{
+			desc: "successful set denom metadata",
+			msgSetDenomMetadata: *types.NewMsgSetDenomMetadata(s.TestAccs[0].String(), banktypes.Metadata{
+				Description: "description",
+				DenomUnits: []*banktypes.DenomUnit{
+					{
+						Denom:    s.defaultDenom,
+						Exponent: 0,
+					},
+					{
+						Denom:    "usei",
+						Exponent: 6,
+					},
+				},
+				Base:    s.defaultDenom,
+				Display: "usei",
+				Name:    "SEI",
+				Symbol:  "SEI",
+			}),
+			expectedPass: true,
+		},
+		{
+			desc: "non existent factory denom name",
+			msgSetDenomMetadata: *types.NewMsgSetDenomMetadata(s.TestAccs[0].String(), banktypes.Metadata{
+				Description: "description",
+				DenomUnits: []*banktypes.DenomUnit{
+					{
+						Denom:    fmt.Sprintf("factory/%s/litecoin", s.TestAccs[0].String()),
+						Exponent: 0,
+					},
+					{
+						Denom:    "usei",
+						Exponent: 6,
+					},
+				},
+				Base:    fmt.Sprintf("factory/%s/litecoin", s.TestAccs[0].String()),
+				Display: "usei",
+				Name:    "SEI",
+				Symbol:  "SEI",
+			}),
+			expectedPass: false,
+		},
+		{
+			desc: "non-factory denom",
+			msgSetDenomMetadata: *types.NewMsgSetDenomMetadata(s.TestAccs[0].String(), banktypes.Metadata{
+				Description: "description",
+				DenomUnits: []*banktypes.DenomUnit{
+					{
+						Denom:    "usei",
+						Exponent: 0,
+					},
+					{
+						Denom:    "useii",
+						Exponent: 6,
+					},
+				},
+				Base:    "usei",
+				Display: "useii",
+				Name:    "SEI",
+				Symbol:  "SEI",
+			}),
+			expectedPass: false,
+		},
+		{
+			desc: "wrong admin",
+			msgSetDenomMetadata: *types.NewMsgSetDenomMetadata(s.TestAccs[1].String(), banktypes.Metadata{
+				Description: "description",
+				DenomUnits: []*banktypes.DenomUnit{
+					{
+						Denom:    s.defaultDenom,
+						Exponent: 0,
+					},
+					{
+						Denom:    "usei",
+						Exponent: 6,
+					},
+				},
+				Base:    s.defaultDenom,
+				Display: "usei",
+				Name:    "SEI",
+				Symbol:  "SEI",
+			}),
+			expectedPass: false,
+		},
+		{
+			desc: "invalid metadata (missing display denom unit)",
+			msgSetDenomMetadata: *types.NewMsgSetDenomMetadata(s.TestAccs[0].String(), banktypes.Metadata{
+				Description: "description",
+				DenomUnits: []*banktypes.DenomUnit{
+					{
+						Denom:    s.defaultDenom,
+						Exponent: 0,
+					},
+				},
+				Base:    s.defaultDenom,
+				Display: "usei",
+				Name:    "SEI",
+				Symbol:  "SEI",
+			}),
+			expectedPass: false,
+		},
+	} {
+		s.Run(fmt.Sprintf("Case %s", tc.desc), func() {
+			bankKeeper := s.App.BankKeeper
+			res, err := s.msgServer.SetDenomMetadata(sdk.WrapSDKContext(s.Ctx), &tc.msgSetDenomMetadata)
+			if tc.expectedPass {
+				s.Require().NoError(err)
+				s.Require().NotNil(res)
+
+				md, found := bankKeeper.GetDenomMetaData(s.Ctx, s.defaultDenom)
+				s.Require().True(found)
+				s.Require().Equal(tc.msgSetDenomMetadata.Metadata.Name, md.Name)
+			} else {
+				s.Require().Error(err)
 			}
 		})
 	}
