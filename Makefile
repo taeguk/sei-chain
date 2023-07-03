@@ -59,6 +59,8 @@ ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
 
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)' -race
+# halt_on_error (default 0): Controls whether the program exits after reporting first data race.
+BUILD_OPTIONS := halt_on_error=1
 # BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 
 #### Command List ####
@@ -66,7 +68,7 @@ BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)' -race
 all: lint install
 
 install: go.sum
-		go install $(BUILD_FLAGS) ./cmd/seid
+		$(BUILD_OPTIONS) go install $(BUILD_FLAGS) ./cmd/seid
 
 install-price-feeder: go.sum
 		go install $(BUILD_FLAGS) ./oracle/price-feeder
