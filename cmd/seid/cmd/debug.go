@@ -115,7 +115,7 @@ func dumpIavlCmdHandler(cmd *cobra.Command, args []string) error {
 			os.Exit(1)
 		}
 		lines = append(lines, []byte(fmt.Sprintf("Hash: %X\n", hash))...)
-		lines = append(lines, []byte(fmt.Sprintf("Size: %X\n", tree.ITree.Size()))...)
+		//lines = append(lines, []byte(fmt.Sprintf("Size: %X\n", tree.ITree.Size()))...)
 		// write lines to file
 		err = os.WriteFile(fmt.Sprintf("%s/%s.data", outputDir, module), lines, os.ModePerm)
 		if err != nil {
@@ -267,11 +267,12 @@ func encodeID(id []byte) string {
 
 func PrintShape(tree *iavl.MutableTree) ([]byte, error) {
 	// shape := tree.RenderShape("  ", nil)
-	shape, err := tree.ITree.RenderShape("  ", nodeEncoder)
-	if err != nil {
-		return []byte{}, err
-	}
-	return []byte(strings.Join(shape, "\n")), nil
+	//shape, err := tree.ITree.RenderShape("  ", nodeEncoder)
+	//if err != nil {
+	//	return []byte{}, err
+	//}
+	//return []byte(strings.Join(shape, "\n")), nil
+	return []byte{}, nil
 }
 
 func nodeEncoder(id []byte, depth int, isLeaf bool) string {
