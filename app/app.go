@@ -1349,7 +1349,9 @@ func (app *App) ProcessBlock(ctx sdk.Context, txs [][]byte, req BlockProcessRequ
 	midBlockEvents := app.MidBlock(ctx, req.GetHeight())
 	events = append(events, midBlockEvents...)
 
+	_, span := app.GetBaseApp().TracingInfo.Start("PSUDEBUG - BuildDependenciesAndRunTxs")
 	otherResults, ctx := app.BuildDependenciesAndRunTxs(ctx, txs)
+	span.End()
 	txResults = append(txResults, otherResults...)
 
 	// Finalize all Bank Module Transfers here so that events are included
