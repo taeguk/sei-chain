@@ -11,7 +11,6 @@ RUN wget -O go.tar.gz "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar
     rm go.tar.gz
 ENV PATH "$PATH:/usr/local/go/bin"
 
-# Continue with the rest of your Dockerfile
 RUN rm -rf build/generated
 SHELL ["/bin/bash", "-c"]
 

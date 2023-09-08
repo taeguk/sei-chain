@@ -1,6 +1,14 @@
 FROM ubuntu:latest
+
 RUN apt-get update && \
-    apt-get install -y make git golang jq python3 curl vim
+    apt-get install -y make git jq python3 curl vim wget gcc
+
+# Install Go 1.20
+ENV GOLANG_VERSION 1.20
+RUN wget -O go.tar.gz "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" && \
+    tar -C /usr/local -xzf go.tar.gz && \
+    rm go.tar.gz
+ENV PATH "$PATH:/usr/local/go/bin"
 
 SHELL ["/bin/bash", "-c"]
 
