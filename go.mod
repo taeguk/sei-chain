@@ -275,13 +275,13 @@ require (
 replace (
 	github.com/CosmWasm/wasmd => github.com/sei-protocol/sei-wasmd v0.0.2
 	github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23/go v0.8.0
-	github.com/cosmos/cosmos-sdk => github.com/sei-protocol/sei-cosmos v0.2.62-0.20230907134944-303ab0dd7b1c
+	github.com/cosmos/cosmos-sdk => github.com/sei-protocol/sei-cosmos v0.2.62-0.20230927131814-871a436b27c2
 	github.com/cosmos/iavl => github.com/sei-protocol/iavl-v1 v1.0.0-rc.1.0.20230907134227-3b120165deed
 	github.com/cosmos/ibc-go/v3 => github.com/sei-protocol/sei-ibc-go/v3 v3.1.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/keybase/go-keychain => github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4
 	github.com/sei-protocol/sei-tm-db => github.com/sei-protocol/sei-tm-db v0.0.6-0.20230907133101-772bde3e2dab
-	github.com/tendermint/tendermint => github.com/sei-protocol/sei-tendermint v0.2.27
+	github.com/tendermint/tendermint => github.com/sei-protocol/sei-tendermint v0.2.28-0.20230914035204-4af5cbf7993a
 	github.com/tendermint/tm-db => github.com/sei-protocol/tm-db v0.0.5-0.20230907132939-b56cad9876eb
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
