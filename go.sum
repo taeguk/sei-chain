@@ -244,7 +244,6 @@ github.com/cosmos/gogoproto v1.4.3 h1:RP3yyVREh9snv/lsOvmsAPQt8f44LgL281X0IOIhhc
 github.com/cosmos/gorocksdb v1.2.0 h1:d0l3jJG8M4hBouIZq0mDUHZ+zjOx044J3nGRskwTb4Y=
 github.com/cosmos/gorocksdb v1.2.0/go.mod h1:aaKvKItm514hKfNJpUJXnnOWeBnk2GL4+Qw9NHizILw=
 github.com/cosmos/ics23/go v0.10.0 h1:iXqLLgp2Lp+EdpIuwXTYIQU+AiHj9mOC2X9ab++bZDM=
-github.com/cosmos/ics23/go v0.10.0/go.mod h1:ZfJSmng/TBNTBkFemHHHj5YY7VAU/MBU980F4VU1NG0=
 github.com/cosmos/interchain-accounts v0.1.0 h1:QmuwNsf1Hxl3P5GSGt7Z+JeuHPiZw4Z34R/038P5T6s=
 github.com/cosmos/ledger-cosmos-go v0.11.1 h1:9JIYsGnXP613pb2vPjFeMMjBI5lEDsEaF6oYorTy6J4=
 github.com/cosmos/ledger-cosmos-go v0.11.1/go.mod h1:J8//BsAGTo3OC/vDLjMRFLW6q0WAaXvHnVc7ZmE8iUY=
@@ -1080,8 +1079,8 @@ github.com/securego/gosec/v2 v2.11.0/go.mod h1:SX8bptShuG8reGC0XS09+a4H2BoWSJi+f
 github.com/segmentio/fasthash v1.0.3/go.mod h1:waKX8l2N8yckOgmSsXJi7x1ZfdKZ4x7KRMzBtS3oedY=
 github.com/sei-protocol/goutils v0.0.2 h1:Bfa7Sv+4CVLNM20QcpvGb81B8C5HkQC/kW1CQpIbXDA=
 github.com/sei-protocol/goutils v0.0.2/go.mod h1:iYE2DuJfEnM+APPehr2gOUXfuLuPsVxorcDO+Tzq9q8=
-github.com/sei-protocol/iavl-v1 v1.0.0-rc.1.0.20230907134227-3b120165deed h1:8jOppPr0DiU4mkFLj+vbjiJ8DU23AVwtkTNMQ1IoEuA=
-github.com/sei-protocol/iavl-v1 v1.0.0-rc.1.0.20230907134227-3b120165deed/go.mod h1:h6Jx7V8R/gzWzo03pnG3KHqyUaQUVlHM0FKFlhjGI+8=
+github.com/sei-protocol/iavl-v1 v1.0.0-rc.1.0.20230928031043-7c8516ba7b21 h1:AbFD1Glu7ZVQryeglK9DZor5wLSCMpmGDT63KH9j3nc=
+github.com/sei-protocol/iavl-v1 v1.0.0-rc.1.0.20230928031043-7c8516ba7b21/go.mod h1:TaOW9mLIlAnfsGIQiNM54IaDoDu4hX0uoDK/88vBdbc=
 github.com/sei-protocol/sei-cosmos v0.2.62-0.20230907134944-303ab0dd7b1c h1:JHjPRLCoA05nYvVRivuNjC0pfuNv0npNY5uC7YTOGIs=
 github.com/sei-protocol/sei-cosmos v0.2.62-0.20230907134944-303ab0dd7b1c/go.mod h1:IdRmfhjeuY+S3HLd+pSwsYdDt/j+egIk0KHyHMmXSgM=
 github.com/sei-protocol/sei-ibc-go/v3 v3.1.0 h1:rFHk2R/3vbG9iNr7cYtVclW/UyEDSRFjNVPz60zZswU=
