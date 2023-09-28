@@ -1079,8 +1079,8 @@ github.com/securego/gosec/v2 v2.11.0/go.mod h1:SX8bptShuG8reGC0XS09+a4H2BoWSJi+f
 github.com/segmentio/fasthash v1.0.3/go.mod h1:waKX8l2N8yckOgmSsXJi7x1ZfdKZ4x7KRMzBtS3oedY=
 github.com/sei-protocol/goutils v0.0.2 h1:Bfa7Sv+4CVLNM20QcpvGb81B8C5HkQC/kW1CQpIbXDA=
 github.com/sei-protocol/goutils v0.0.2/go.mod h1:iYE2DuJfEnM+APPehr2gOUXfuLuPsVxorcDO+Tzq9q8=
-github.com/sei-protocol/iavl-v1 v1.0.0-rc.1.0.20230928191407-8642ddf22ce4 h1:YtCbn+yUVXHVk/uwxnZ1EsTXDovYCJxiyrMgSd89pX0=
-github.com/sei-protocol/iavl-v1 v1.0.0-rc.1.0.20230928191407-8642ddf22ce4/go.mod h1:TaOW9mLIlAnfsGIQiNM54IaDoDu4hX0uoDK/88vBdbc=
+github.com/sei-protocol/iavl-v1 v1.0.0-rc.1.0.20230928193909-3e27f43b4ba2 h1:FBc9hH+IuC6ivdLD0M9PgnTMbZqm2aSnsdftylGtSWo=
+github.com/sei-protocol/iavl-v1 v1.0.0-rc.1.0.20230928193909-3e27f43b4ba2/go.mod h1:TaOW9mLIlAnfsGIQiNM54IaDoDu4hX0uoDK/88vBdbc=
 github.com/sei-protocol/sei-cosmos v0.2.62-0.20230907134944-303ab0dd7b1c h1:JHjPRLCoA05nYvVRivuNjC0pfuNv0npNY5uC7YTOGIs=
 github.com/sei-protocol/sei-cosmos v0.2.62-0.20230907134944-303ab0dd7b1c/go.mod h1:IdRmfhjeuY+S3HLd+pSwsYdDt/j+egIk0KHyHMmXSgM=
 github.com/sei-protocol/sei-ibc-go/v3 v3.1.0 h1:rFHk2R/3vbG9iNr7cYtVclW/UyEDSRFjNVPz60zZswU=
