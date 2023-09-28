@@ -100,7 +100,7 @@ func dumpIavlCmdHandler(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	for _, module := range modules {
-		fmt.Printf("Processing Module: %s\n\n", module)
+		fmt.Printf("\n\nProcessing Module: %s\n", module)
 		tree, err := ReadTree(db, version, []byte(BuildPrefix(module)))
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error reading data: %s\n", err)
