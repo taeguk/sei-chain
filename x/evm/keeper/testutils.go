@@ -15,6 +15,8 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/go-bip39"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -30,6 +32,7 @@ func MockEVMKeeper() (*Keeper, *paramskeeper.Keeper, sdk.Context) {
 	evmStoreKey := sdk.NewKVStoreKey(types.StoreKey)
 	authStoreKey := sdk.NewKVStoreKey(authtypes.StoreKey)
 	bankStoreKey := sdk.NewKVStoreKey(banktypes.StoreKey)
+	stakingStoreKey := sdk.NewKVStoreKey(stakingtypes.StoreKey)
 	keyParams := sdk.NewKVStoreKey(typesparams.StoreKey)
 	tKeyParams := sdk.NewTransientStoreKey(typesparams.TStoreKey)
 
@@ -38,6 +41,7 @@ func MockEVMKeeper() (*Keeper, *paramskeeper.Keeper, sdk.Context) {
 	stateStore.MountStoreWithDB(evmStoreKey, sdk.StoreTypeIAVL, db)
 	stateStore.MountStoreWithDB(authStoreKey, sdk.StoreTypeIAVL, db)
 	stateStore.MountStoreWithDB(bankStoreKey, sdk.StoreTypeIAVL, db)
+	stateStore.MountStoreWithDB(stakingStoreKey, sdk.StoreTypeIAVL, db)
 	stateStore.MountStoreWithDB(tKeyParams, sdk.StoreTypeTransient, db)
 	stateStore.MountStoreWithDB(keyParams, sdk.StoreTypeIAVL, db)
 	_ = stateStore.LoadLatestVersion()
@@ -47,9 +51,10 @@ func MockEVMKeeper() (*Keeper, *paramskeeper.Keeper, sdk.Context) {
 	paramsKeeper := paramskeeper.NewKeeper(cdc, codec.NewLegacyAmino(), keyParams, tKeyParams)
 	accountKeeper := authkeeper.NewAccountKeeper(cdc, authStoreKey, paramsKeeper.Subspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, map[string][]string{types.ModuleName: {authtypes.Minter, authtypes.Burner}})
 	bankKeeper := bankkeeper.NewBaseKeeper(cdc, bankStoreKey, accountKeeper, paramsKeeper.Subspace(banktypes.ModuleName), map[string]bool{})
+	stakingKeeper := stakingkeeper.NewKeeper(cdc, stakingStoreKey, accountKeeper, bankKeeper, paramsKeeper.Subspace(stakingtypes.ModuleName))
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
-	k := NewKeeper(evmStoreKey, paramsKeeper.Subspace(types.ModuleName), big.NewInt(1), bankKeeper, &accountKeeper)
+	k := NewKeeper(evmStoreKey, paramsKeeper.Subspace(types.ModuleName), big.NewInt(1), bankKeeper, &accountKeeper, &stakingKeeper)
 	k.SetParams(ctx, types.DefaultParams())
 	return k, &paramsKeeper, ctx
 }

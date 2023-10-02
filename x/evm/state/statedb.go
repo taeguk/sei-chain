@@ -3,7 +3,6 @@ package state
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/sei-protocol/sei-chain/x/evm/keeper"
 	"github.com/sei-protocol/sei-chain/x/evm/types"
 )
 
@@ -15,10 +14,10 @@ type StateDBImpl struct {
 	// back.
 	err error
 
-	k *keeper.Keeper
+	k EVMKeeper
 }
 
-func NewStateDBImpl(ctx sdk.Context, k *keeper.Keeper) *StateDBImpl {
+func NewStateDBImpl(ctx sdk.Context, k EVMKeeper) *StateDBImpl {
 	s := &StateDBImpl{
 		ctx:             ctx,
 		k:               k,
@@ -26,6 +25,26 @@ func NewStateDBImpl(ctx sdk.Context, k *keeper.Keeper) *StateDBImpl {
 	}
 	s.Snapshot() // take an initial snapshot for GetCommitted
 	return s
+}
+
+// test only
+func (s *StateDBImpl) Err() error {
+	return s.err
+}
+
+// test only
+func (s *StateDBImpl) WithErr(err error) {
+	s.err = err
+}
+
+// test only
+func (s *StateDBImpl) Ctx() sdk.Context {
+	return s.ctx
+}
+
+// test only
+func (s *StateDBImpl) WithCtx(ctx sdk.Context) {
+	s.ctx = ctx
 }
 
 // AddPreimage records a SHA3 preimage seen by the VM.
