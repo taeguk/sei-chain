@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"bytes"
 	"crypto/sha256"
+	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 	"io"
@@ -24,6 +25,11 @@ const (
 	FlagOutputDir    string = "output-dir"
 	FlagModuleName   string = "module"
 )
+
+type KeyValuePair struct {
+	Key   []byte `json:"key"`
+	Value []byte `json:"value"`
+}
 
 var modules = []string{
 	"dex", "wasm", "accesscontrol", "oracle", "epoch", "mint", "acc", "bank", "crisis", "feegrant", "staking", "distribution", "slashing", "gov", "params", "ibc", "upgrade", "evidence", "transfer", "tokenfactory",
@@ -47,6 +53,73 @@ $ %s debug dump-iavl 12345
 	cmd.Flags().StringP(FlagModuleName, "m", "", "The specific module to dump IAVL for, if none specified, all modules will be dumped")
 
 	return cmd
+}
+
+func WriteKVEntriesToFile(filename string, kvPairs []KeyValuePair) error {
+	f, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	for _, kv := range kvPairs {
+		if err := writeByteSlice(f, kv.Key); err != nil {
+			return err
+		}
+		if err := writeByteSlice(f, kv.Value); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func writeByteSlice(w io.Writer, data []byte) error {
+	length := uint32(len(data))
+	if err := binary.Write(w, binary.LittleEndian, length); err != nil {
+		return err
+	}
+	_, err := w.Write(data)
+	return err
+}
+
+func ReadFromFile(filename string) ([]KeyValuePair, error) {
+	f, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	var kvPairs []KeyValuePair
+
+	for {
+		key, err := readByteSlice(f)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+
+		value, err := readByteSlice(f)
+		if err != nil {
+			return nil, err
+		}
+
+		kvPairs = append(kvPairs, KeyValuePair{Key: key, Value: value})
+	}
+
+	return kvPairs, nil
+}
+
+func readByteSlice(r io.Reader) ([]byte, error) {
+	var length uint32
+	if err := binary.Read(r, binary.LittleEndian, &length); err != nil {
+		return nil, err
+	}
+
+	data := make([]byte, length)
+	_, err := io.ReadFull(r, data)
+	return data, err
 }
 
 func dumpIavlCmdHandler(cmd *cobra.Command, args []string) error {
@@ -108,7 +181,13 @@ func dumpIavlCmdHandler(cmd *cobra.Command, args []string) error {
 			// os.Exit(1)
 		}
 		parser := ModuleParserMap[module]
-		lines := PrintKeys(tree, parser)
+		lines, kvEntries := PrintKeys(tree, parser)
+		err = WriteKVEntriesToFile(fmt.Sprintf("%s/%s.kv", outputDir, module), kvEntries)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error writing kv entries for module %s to file %s\n", module, err)
+			os.Exit(1)
+		}
+
 		hash, err := tree.Hash()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error hashing tree: %s\n", err)
@@ -121,6 +200,7 @@ func dumpIavlCmdHandler(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
+		// write raw kv entries to a file
 
 		shapeLines, err := PrintShape(tree)
 		if err != nil {
@@ -219,12 +299,13 @@ func ReadTree(db dbm.DB, version int, prefix []byte) (*iavl.MutableTree, error) 
 	return tree, err
 }
 
-func PrintKeys(tree *iavl.MutableTree, moduleParser ModuleParser) []byte {
+func PrintKeys(tree *iavl.MutableTree, moduleParser ModuleParser) ([]byte, []KeyValuePair) {
 	fmt.Println("Printing all keys with hashed values (to detect diff)")
 	if moduleParser != nil {
 		fmt.Println("Parsing module with human readable keys")
 	}
 	lines := []byte{}
+	kvEntries := []KeyValuePair{}
 	tree.Iterate(func(key []byte, value []byte) bool { //nolint:errcheck
 		printKey := parseWeaveKey(key)
 		// parse key if we have a parser
@@ -238,9 +319,10 @@ func PrintKeys(tree *iavl.MutableTree, moduleParser ModuleParser) []byte {
 		}
 		digest := sha256.Sum256(value)
 		lines = append(lines, []byte(fmt.Sprintf("  %s\n    %X\n", printKey, digest))...)
+		kvEntries = append(kvEntries, KeyValuePair{Key: key, Value: value})
 		return false
 	})
-	return lines
+	return lines, kvEntries
 }
 
 // parseWeaveKey assumes a separating : where all in front should be ascii,
