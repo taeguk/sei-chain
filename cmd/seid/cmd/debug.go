@@ -82,7 +82,7 @@ func writeByteSlice(w io.Writer, data []byte) error {
 	return err
 }
 
-func ReadFromFile(filename string) ([]KeyValuePair, error) {
+func ReadKVEntriesFromFile(filename string) ([]KeyValuePair, error) {
 	f, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -182,6 +182,8 @@ func dumpIavlCmdHandler(cmd *cobra.Command, args []string) error {
 		}
 		parser := ModuleParserMap[module]
 		lines, kvEntries := PrintKeys(tree, parser)
+
+		// write raw kv entries to a file
 		err = WriteKVEntriesToFile(fmt.Sprintf("%s/%s.kv", outputDir, module), kvEntries)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error writing kv entries for module %s to file %s\n", module, err)
@@ -200,7 +202,6 @@ func dumpIavlCmdHandler(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		// write raw kv entries to a file
 
 		shapeLines, err := PrintShape(tree)
 		if err != nil {
