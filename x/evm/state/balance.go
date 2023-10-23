@@ -33,7 +33,7 @@ func (s *DBImpl) SubBalance(evmAddr common.Address, amt *big.Int) {
 		return
 	}
 
-	s.AddBigIntTransientModuleState(new(big.Int).Neg(amt), TotalUnassociatedBalanceKey)
+	s.AddBigIntTransientModuleState(new(big.Int).Neg(amt), types.TotalUnassociatedBalanceKey)
 	s.k.SetOrDeleteBalance(s.ctx, evmAddr, balance-amt.Uint64())
 }
 
@@ -65,7 +65,7 @@ func (s *DBImpl) AddBalance(evmAddr common.Address, amt *big.Int) {
 		return
 	}
 
-	s.AddBigIntTransientModuleState(amt, TotalUnassociatedBalanceKey)
+	s.AddBigIntTransientModuleState(amt, types.TotalUnassociatedBalanceKey)
 	s.k.SetOrDeleteBalance(s.ctx, evmAddr, balance+amt.Uint64())
 }
 
@@ -80,7 +80,7 @@ func (s *DBImpl) CheckBalance() error {
 	if s.err != nil {
 		return errors.New("should not call CheckBalance if there is already an error during execution")
 	}
-	totalUnassociatedBalance := s.GetBigIntTransientModuleState(TotalUnassociatedBalanceKey)
+	totalUnassociatedBalance := s.GetBigIntTransientModuleState(types.TotalUnassociatedBalanceKey)
 	currentModuleBalance := s.k.GetModuleBalance(s.ctx)
 	if totalUnassociatedBalance.Cmp(currentModuleBalance) > 0 {
 		// this means tokens are generated out of thin air during tx processing, which should not happen

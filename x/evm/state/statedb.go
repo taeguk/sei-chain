@@ -27,8 +27,8 @@ func NewDBImpl(ctx sdk.Context, k EVMKeeper) *DBImpl {
 		k:               k,
 		snapshottedCtxs: []sdk.Context{},
 	}
-	s.Snapshot()                                                                            // take an initial snapshot for GetCommitted
-	s.AddBigIntTransientModuleState(k.GetModuleBalance(s.ctx), TotalUnassociatedBalanceKey) // set total unassociated balance to be current module balance
+	s.Snapshot()                                                                                  // take an initial snapshot for GetCommitted
+	s.AddBigIntTransientModuleState(k.GetModuleBalance(s.ctx), types.TotalUnassociatedBalanceKey) // set total unassociated balance to be current module balance
 	return s
 }
 

@@ -98,6 +98,7 @@ func (a *FilterAPI) GetLogs(
 	toBlock rpc.BlockNumber,
 	topics []common.Hash,
 ) ([]common.Hash, error) {
+	// need to reach into get log!
 	return nil, nil
 }
 

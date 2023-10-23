@@ -99,7 +99,7 @@ func TestSelfDestructAssociated(t *testing.T) {
 	statedb.MarkAccount(evmAddr, nil)
 	statedb.Selfdestruct6780(evmAddr)
 	require.Equal(t, val, statedb.GetState(evmAddr, key))
-	statedb.MarkAccount(evmAddr, state.AccountCreated)
+	statedb.MarkAccount(evmAddr, types.AccountCreated)
 	require.False(t, statedb.HasSelfDestructed(evmAddr))
 
 	// Selfdestruct6780 is equivalent to SelfDestruct if account is created in the same block

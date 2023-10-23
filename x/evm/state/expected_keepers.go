@@ -7,6 +7,7 @@ import (
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/ethereum/go-ethereum/common"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
 )
 
 type EVMKeeper interface {
@@ -19,5 +20,7 @@ type EVMKeeper interface {
 	GetBalance(sdk.Context, common.Address) uint64
 	SetOrDeleteBalance(sdk.Context, common.Address, uint64)
 	GetModuleBalance(sdk.Context) *big.Int
+	AddLog(sdk.Context, *ethtypes.Log) error
+	GetLogs(sdk.Context) ([]*ethtypes.Log, error)
 	AccountKeeper() *authkeeper.AccountKeeper
 }

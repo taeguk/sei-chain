@@ -11,7 +11,7 @@ import (
 func (s *DBImpl) CreateAccount(acc common.Address) {
 	// clear any existing state but keep balance untouched
 	s.clearAccountState(acc)
-	s.MarkAccount(acc, AccountCreated)
+	s.MarkAccount(acc, types.AccountCreated)
 }
 
 func (s *DBImpl) GetCommittedState(addr common.Address, hash common.Hash) common.Hash {
@@ -67,7 +67,7 @@ func (s *DBImpl) SelfDestruct(acc common.Address) {
 	s.clearAccountState(acc)
 
 	// mark account as self-destructed
-	s.MarkAccount(acc, AccountDeleted)
+	s.MarkAccount(acc, types.AccountDeleted)
 }
 
 func (s *DBImpl) Selfdestruct6780(acc common.Address) {
@@ -81,7 +81,7 @@ func (s *DBImpl) Selfdestruct6780(acc common.Address) {
 // **CURRENT** block
 func (s *DBImpl) HasSelfDestructed(acc common.Address) bool {
 	store := s.k.PrefixStore(s.ctx, types.AccountTransientStateKeyPrefix)
-	return bytes.Equal(store.Get(acc[:]), AccountDeleted)
+	return bytes.Equal(store.Get(acc[:]), types.AccountDeleted)
 }
 
 func (s *DBImpl) Snapshot() int {
@@ -116,5 +116,5 @@ func (s *DBImpl) MarkAccount(acc common.Address, status []byte) {
 
 func (s *DBImpl) Created(acc common.Address) bool {
 	store := s.k.PrefixStore(s.ctx, types.AccountTransientStateKeyPrefix)
-	return bytes.Equal(store.Get(acc[:]), AccountCreated)
+	return bytes.Equal(store.Get(acc[:]), types.AccountCreated)
 }

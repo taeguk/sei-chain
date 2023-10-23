@@ -11,7 +11,7 @@ func (s *DBImpl) AddRefund(gas uint64) {
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, s.GetRefund()+gas)
 	store := s.k.PrefixStore(s.ctx, types.TransientModuleStateKeyPrefix)
-	store.Set(GasRefundKey, bz)
+	store.Set(types.GasRefundKey, bz)
 }
 
 // Copied from go-ethereum as-is
@@ -25,12 +25,12 @@ func (s *DBImpl) SubRefund(gas uint64) {
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, refund-gas)
 	store := s.k.PrefixStore(s.ctx, types.TransientModuleStateKeyPrefix)
-	store.Set(GasRefundKey, bz)
+	store.Set(types.GasRefundKey, bz)
 }
 
 func (s *DBImpl) GetRefund() uint64 {
 	store := s.k.PrefixStore(s.ctx, types.TransientModuleStateKeyPrefix)
-	bz := store.Get(GasRefundKey)
+	bz := store.Get(types.GasRefundKey)
 	if bz == nil {
 		return 0
 	}
