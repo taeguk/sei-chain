@@ -19,6 +19,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/go-bip39"
 	"github.com/ethereum/go-ethereum/common"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -61,6 +62,13 @@ func MockEVMKeeper() (*Keeper, *paramskeeper.Keeper, sdk.Context) {
 	ctx := sdk.NewContext(stateStore, tmproto.Header{Height: 8}, false, log.NewNopLogger())
 	k := NewKeeper(evmStoreKey, paramsKeeper.Subspace(types.ModuleName), big.NewInt(1), bankKeeper, &accountKeeper, &stakingKeeper)
 	k.InitGenesis(ctx)
+
+	// Add some logs
+	k.AddLog(sdk.NewContext(stateStore, tmproto.Header{Height: 1}, false, log.NewNopLogger()), MockLogAtBlockNumber(1))
+	k.AddLog(sdk.NewContext(stateStore, tmproto.Header{Height: 10}, false, log.NewNopLogger()), MockLogAtBlockNumber(2))
+	k.AddLog(sdk.NewContext(stateStore, tmproto.Header{Height: 12}, false, log.NewNopLogger()), MockLogAtBlockNumber(3))
+	k.AddLog(sdk.NewContext(stateStore, tmproto.Header{Height: 20}, false, log.NewNopLogger()), MockLogAtBlockNumber(4))
+
 	return k, &paramsKeeper, ctx
 }
 
@@ -75,6 +83,20 @@ func MockPrivateKey() cryptotypes.PrivKey {
 	algo := hd.Secp256k1
 	derivedPriv, _ := algo.Derive()(mnemonic, "", "")
 	return algo.Generate()(derivedPriv)
+}
+
+func MockLogAtBlockNumber(blockNum uint64) *ethtypes.Log {
+	_, evmAddr := MockAddressPair()
+	return &ethtypes.Log{
+		Address:     evmAddr,
+		Topics:      []common.Hash{common.HexToHash("0x123")},
+		Data:        []byte("0x456"),
+		BlockNumber: blockNum,
+		TxHash:      common.HexToHash("0x789"),
+		TxIndex:     1,
+		BlockHash:   common.HexToHash("0xabc"),
+		Index:       1,
+	}
 }
 
 func PrivateKeyToAddresses(privKey cryptotypes.PrivKey) (sdk.AccAddress, common.Address) {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -63,7 +64,6 @@ func TestNewFilter(t *testing.T) {
 				topicsStrs = append(topicsStrs, "\""+topic.String()+"\"")
 			}
 			body := fmt.Sprintf("{\"jsonrpc\": \"2.0\",\"method\": \"eth_newFilter\",\"params\":[\"%s\",\"%s\",%s,%s],\"id\":\"test\"}", tt.fromBlock, tt.toBlock, addrsStrs, topicsStrs)
-			fmt.Println("body = ", body)
 			req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("http://%s:%d", TestAddr, TestPort), strings.NewReader(body))
 			require.Nil(t, err)
 			req.Header.Set("Content-Type", "application/json")
@@ -132,4 +132,53 @@ func TestUninstallFilter(t *testing.T) {
 	require.Nil(t, json.Unmarshal(resBody, &resObj))
 	uninstallSuccess = resObj["result"].(bool)
 	require.False(t, uninstallSuccess)
+}
+
+func TestGetFilterLogs(t *testing.T) {
+	// create a filter
+	addrs := []common.Address{common.HexToAddress(common.Bytes2Hex([]byte("evmAddr")))}
+	topics := []common.Hash{common.HexToHash(common.Bytes2Hex([]byte("topic")))}
+	fromBlock := "0x1"
+	toBlock := "0x2"
+	addrsStrs := []string{}
+	for _, addr := range addrs {
+		addrsStrs = append(addrsStrs, "\""+addr.String()+"\"")
+	}
+	topicsStrs := []string{}
+	for _, topic := range topics {
+		topicsStrs = append(topicsStrs, "\""+topic.String()+"\"")
+	}
+	body := fmt.Sprintf("{\"jsonrpc\": \"2.0\",\"method\": \"eth_newFilter\",\"params\":[\"%s\",\"%s\",%s,%s],\"id\":\"test\"}", fromBlock, toBlock, addrsStrs, topicsStrs)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("http://%s:%d", TestAddr, TestPort), strings.NewReader(body))
+	require.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	res, err := http.DefaultClient.Do(req)
+	require.Nil(t, err)
+	resBody, err := io.ReadAll(res.Body)
+	require.Nil(t, err)
+	resObj := map[string]interface{}{}
+	require.Nil(t, json.Unmarshal(resBody, &resObj))
+
+	body = fmt.Sprintf("{\"jsonrpc\": \"2.0\",\"method\": \"eth_getFilterLogs\",\"params\":[%d],\"id\":\"test\"}", 1)
+	req, err = http.NewRequest(http.MethodGet, fmt.Sprintf("http://%s:%d", TestAddr, TestPort), strings.NewReader(body))
+	require.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	res, err = http.DefaultClient.Do(req)
+	require.Nil(t, err)
+	resBody, err = io.ReadAll(res.Body)
+	require.Nil(t, err)
+	resObj = map[string]interface{}{}
+	require.Nil(t, json.Unmarshal(resBody, &resObj))
+	// do type assertion
+	logs, ok := resObj["result"].([]interface{})
+	require.True(t, ok)
+
+	for _, log := range logs {
+		logMap := log.(map[string]interface{})
+		bnHex := logMap["blockNumber"].(string)
+		bnInt, err := strconv.ParseInt(bnHex[2:], 16, 64)
+		require.Nil(t, err)
+		require.GreaterOrEqual(t, bnInt, int64(1))
+		require.LessOrEqual(t, bnInt, int64(2))
+	}
 }

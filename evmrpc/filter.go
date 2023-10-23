@@ -6,6 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/sei-protocol/sei-chain/x/evm/keeper"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
@@ -19,12 +20,11 @@ type filter struct {
 	// todo: expiration
 }
 
-
 type FilterAPI struct {
 	tmClient     rpcclient.Client
 	keeper       *keeper.Keeper
 	ctxProvider  func(int64) sdk.Context
-	nextFilterId uint64 
+	nextFilterId uint64
 	filters      map[uint64]filter
 }
 
@@ -78,7 +78,7 @@ func (a *FilterAPI) NewFilter(
 
 func (a *FilterAPI) GetFilterChanges(
 	ctx context.Context,
-	filterId  uint64,
+	filterId uint64,
 ) ([]common.Hash, error) {
 	return nil, nil
 }
@@ -86,9 +86,22 @@ func (a *FilterAPI) GetFilterChanges(
 func (a *FilterAPI) GetFilterLogs(
 	ctx context.Context,
 	filterId uint64,
-) ([]common.Hash, error) {
-
-	return nil, nil
+) ([]*ethtypes.Log, error) {
+	logs, err := a.keeper.GetLogs(a.ctxProvider(LatestCtxHeight))
+	if err != nil {
+		return nil, err
+	}
+	filter, ok := a.filters[filterId]
+	if !ok {
+		return nil, errors.New("filter id not found")
+	}
+	filterLogs := make([]*ethtypes.Log, 0)
+	for _, log := range logs {
+		if uint64(filter.fromBlock.Int64()) <= log.BlockNumber && uint64(filter.toBlock.Int64()) >= log.BlockNumber {
+			filterLogs = append(filterLogs, log)
+		}
+	}
+	return filterLogs, nil
 }
 
 func (a *FilterAPI) GetLogs(
