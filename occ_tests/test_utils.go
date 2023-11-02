@@ -2,6 +2,7 @@ package occ_tests
 
 import (
 	"context"
+	"fmt"
 	tx2 "github.com/cosmos/cosmos-sdk/client/tx"
 	types3 "github.com/cosmos/cosmos-sdk/codec/types"
 	types2 "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -13,6 +14,7 @@ import (
 	"github.com/sei-protocol/sei-chain/app"
 	"math/rand"
 	"os"
+	"reflect"
 	"testing"
 	"time"
 
@@ -54,8 +56,8 @@ const INSTANTIATE = `{"whitelist": ["sei1h9yjz89tl0dl6zu65dpxcqnxfhq60wxx8s5kag"
 		"maintenance":"0.06"
 	}}`
 
-func toRequests(testCtx *TestContext, msgs []sdk.Msg) []types.RequestDeliverTx {
-	var txs []types.RequestDeliverTx
+func toTxBytes(testCtx *TestContext, msgs []sdk.Msg) [][]byte {
+	var txs [][]byte
 	tc := app.MakeEncodingConfig().TxConfig
 
 	priv := testCtx.Signer.PrivateKey
@@ -95,8 +97,8 @@ func toRequests(testCtx *TestContext, msgs []sdk.Msg) []types.RequestDeliverTx {
 
 		signerData := authsigning.SignerData{
 			ChainID:       testCtx.Ctx.ChainID(),
-			AccountNumber: 0,
 			Sequence:      acct.GetSequence(),
+			AccountNumber: acct.GetAccountNumber(),
 		}
 
 		sigV2, err := tx2.SignWithPrivKey(
@@ -116,7 +118,7 @@ func toRequests(testCtx *TestContext, msgs []sdk.Msg) []types.RequestDeliverTx {
 		if err != nil {
 			panic(err)
 		}
-		txs = append(txs, types.RequestDeliverTx{Tx: b})
+		txs = append(txs, b)
 
 		if err := acct.SetSequence(acct.GetSequence() + 1); err != nil {
 			panic(err)
@@ -159,7 +161,7 @@ func initSigner() Signer {
 func initTestContext(signer Signer, blockTime time.Time) *TestContext {
 	contractFile := "../integration_test/contracts/mars.wasm"
 	testApp := keepertest.TestApp()
-	ctx := testApp.BaseApp.NewContext(false, tmproto.Header{Time: time.Now()})
+	ctx := testApp.BaseApp.NewContext(false, tmproto.Header{Time: time.Now(), Height: 1})
 	ctx = ctx.WithChainID("chainId")
 	ctx = ctx.WithContext(context.WithValue(ctx.Context(), dexutils.DexMemStateContextKey, dexcache.NewMemState(testApp.GetMemKey(dextypes.MemStoreKey))))
 	ctx = ctx.WithBlockGasMeter(sdk.NewGasMeter(100000000))
@@ -198,6 +200,7 @@ func initTestContext(signer Signer, blockTime time.Time) *TestContext {
 	}
 }
 
+// ignoreStoreKeys are store keys that are not compared
 var ignoredStoreKeys = map[string]struct{}{
 	"mem_capability": {},
 	"epoch":          {},
@@ -220,10 +223,10 @@ func shuffle(msgs []sdk.Msg) []sdk.Msg {
 	return result
 }
 
-func assertEqualStores(t *testing.T, expectedCtx sdk.Context, actualCtx sdk.Context) {
+func assertEqualState(t *testing.T, expectedCtx sdk.Context, actualCtx sdk.Context, testName string) {
 	expectedStoreKeys := expectedCtx.MultiStore().StoreKeys()
 	actualStoreKeys := actualCtx.MultiStore().StoreKeys()
-	require.Equal(t, len(expectedStoreKeys), len(actualStoreKeys))
+	require.Equal(t, len(expectedStoreKeys), len(actualStoreKeys), testName)
 
 	// store keys are mapped by reference, so Name()==Name() comparison is needed
 	for _, esk := range expectedStoreKeys {
@@ -232,14 +235,14 @@ func assertEqualStores(t *testing.T, expectedCtx sdk.Context, actualCtx sdk.Cont
 			if !ignored && (esk.Name() == ask.Name()) {
 				expected := expectedCtx.MultiStore().GetKVStore(esk)
 				actual := actualCtx.MultiStore().GetKVStore(ask)
-				compareStores(t, esk, expected, actual)
+				compareStores(t, esk, expected, actual, testName)
 			}
 		}
 	}
 }
 
 // compareStores compares the expected and actual KVStores regarding keys and values
-func compareStores(t *testing.T, storeKey sdk.StoreKey, expected store.KVStore, actual store.KVStore) {
+func compareStores(t *testing.T, storeKey sdk.StoreKey, expected store.KVStore, actual store.KVStore, testName string) {
 	if _, ok := ignoredStoreKeys[storeKey.Name()]; ok {
 		return
 	}
@@ -270,47 +273,86 @@ func compareStores(t *testing.T, storeKey sdk.StoreKey, expected store.KVStore, 
 	require.False(t, iactual.Valid(), "Extra key found in the actual store: %s", storeKey.Name())
 }
 
-func runSequentially(testCtx *TestContext, msgs []sdk.Msg) []*sdk.DeliverTxResult {
-	reqs := toRequests(testCtx, msgs)
-	var res []*sdk.DeliverTxResult
-	for idx, req := range reqs {
-		ctx := testCtx.Ctx.WithTxIndex(idx)
-		resp := testCtx.TestApp.DeliverTx(ctx, req)
-		res = append(res, &sdk.DeliverTxResult{Response: resp})
-	}
-	return res
+func runParallel(testCtx *TestContext, msgs []sdk.Msg) ([]types.Event, []*types.ExecTxResult, types.ResponseEndBlock, error) {
+	return runTxs(testCtx, msgs, true)
 }
 
-func runParallel(testCtx *TestContext, msgs []sdk.Msg) []*sdk.DeliverTxResult {
-	reqs := toRequests(testCtx, msgs)
-
-	var entries []*sdk.DeliverTxEntry
-	for _, req := range reqs {
-		entries = append(entries, &sdk.DeliverTxEntry{Request: req})
-	}
-
-	res := testCtx.TestApp.DeliverTxBatch(testCtx.Ctx, sdk.DeliverTxBatchRequest{TxEntries: entries})
-	return res.Results
+func runSequentially(testCtx *TestContext, msgs []sdk.Msg) ([]types.Event, []*types.ExecTxResult, types.ResponseEndBlock, error) {
+	return runTxs(testCtx, msgs, false)
 }
 
-func assertEqualResponses(t *testing.T, expected []*sdk.DeliverTxResult, actual []*sdk.DeliverTxResult) {
+func runTxs(testCtx *TestContext, msgs []sdk.Msg, parallel bool) ([]types.Event, []*types.ExecTxResult, types.ResponseEndBlock, error) {
+	app.EnableOCC = parallel
+	txs := toTxBytes(testCtx, msgs)
+	req := &types.RequestFinalizeBlock{
+		Txs:    txs,
+		Height: testCtx.Ctx.BlockHeader().Height,
+	}
+	return testCtx.TestApp.ProcessBlock(testCtx.Ctx, txs, req, req.DecidedLastCommit)
+}
 
-	if len(expected) != len(actual) {
-		t.Fatalf("expected %d responses, got %d", len(expected), len(actual))
+// assertEqualEventAttributes checks if both attribute slices have the same attributes, regardless of order.
+func assertEqualEventAttributes(t *testing.T, testName string, expected, actual []types.EventAttribute) {
+	require.Equal(t, len(expected), len(actual), "%s: Number of event attributes do not match", testName)
+
+	// Convert the slice of EventAttribute to a string for comparison to avoid issues with byte slice comparison.
+	attributesToString := func(attrs []types.EventAttribute) map[string]bool {
+		attrStrs := make(map[string]bool)
+		for _, attr := range attrs {
+			attrStr := fmt.Sprintf("%s=%s/%v", attr.Key, attr.Value, attr.Index)
+			attrStrs[attrStr] = true
+		}
+		return attrStrs
 	}
 
-	for i, r := range expected {
-		if r.Response.Code != actual[i].Response.Code {
-			t.Fatalf("expected expected code %d, got %d", r.Response.Code, actual[i].Response.Code)
+	expectedAttrStrs := attributesToString(expected)
+	actualAttrStrs := attributesToString(actual)
+
+	require.Equal(t, expectedAttrStrs, actualAttrStrs, "%s: Event attributes do not match", testName)
+}
+
+// assertEqualEvents checks if both event slices have the same events, regardless of order.
+func assertEqualEvents(t *testing.T, expected, actual []types.Event, testName string) {
+	require.Equal(t, len(expected), len(actual), "%s: Number of events do not match", testName)
+
+	for _, expectedEvent := range expected {
+		found := false
+		for i, actualEvent := range actual {
+			if expectedEvent.Type == actualEvent.Type {
+				assertEqualEventAttributes(t, testName, expectedEvent.Attributes, actualEvent.Attributes)
+				actual = append(actual[:i], actual[i+1:]...) // Remove the found event
+				found = true
+				break
+			}
 		}
-		if 0 != actual[i].Response.Code {
-			t.Fatalf("expected expected code %d, got %d", 0, actual[i].Response.Code)
+		require.True(t, found, "%s: Expected event of type '%s' not found", testName, expectedEvent.Type)
+	}
+}
+
+// assertEqualExecTxResults validates the code, so that all errors don't count as a success
+func assertExecTxResultCode(t *testing.T, expected, actual []*types.ExecTxResult, code uint32, testName string) {
+	for _, e := range expected {
+		require.Equal(t, code, e.Code, "%s: Expected code %d, got %d", testName, code, e.Code)
+	}
+	for _, a := range actual {
+		require.Equal(t, code, a.Code, "%s: Actual code %d, got %d", testName, code, a.Code)
+	}
+}
+
+// assertEqualExecTxResults checks if both slices have the same transaction results, regardless of order.
+func assertEqualExecTxResults(t *testing.T, expected, actual []*types.ExecTxResult, testName string) {
+	require.Equal(t, len(expected), len(actual), "%s: Number of transaction results do not match", testName)
+
+	// Here, we assume that ExecTxResult is comparable; if not, you'll need to create a key
+	// that is based on the comparable parts of the ExecTxResult.
+	for _, expectedRes := range expected {
+		found := false
+		for _, actualRes := range actual {
+			if reflect.DeepEqual(expectedRes, actualRes) {
+				found = true
+				break
+			}
 		}
-		if r.Response.Log != actual[i].Response.Log {
-			t.Fatalf("expected expected log %s, got %s", r.Response.Log, actual[i].Response.Log)
-		}
-		if r.Response.Info != actual[i].Response.Info {
-			t.Fatalf("expected expected info %s, got %s", r.Response.Info, actual[i].Response.Info)
-		}
+		require.True(t, found, "%s: Expected ExecTxResult not found: %+v", testName, expectedRes)
 	}
 }

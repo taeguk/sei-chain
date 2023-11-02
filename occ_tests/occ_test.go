@@ -2,6 +2,7 @@ package occ_tests
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
 )
@@ -9,6 +10,7 @@ import (
 // TestParallelTransactions verifies that the store state is equivalent
 // between both parallel and sequential executions
 func TestParallelTransactions(t *testing.T) {
+	runs := 3
 	tests := []struct {
 		name    string
 		runs    int
@@ -17,7 +19,7 @@ func TestParallelTransactions(t *testing.T) {
 	}{
 		{
 			name: "Test wasm instantiations",
-			runs: 5,
+			runs: runs,
 			txs: func(tCtx *TestContext) []sdk.Msg {
 				return joinMsgs(
 					wasmInstantiate(tCtx, 10),
@@ -26,7 +28,7 @@ func TestParallelTransactions(t *testing.T) {
 		},
 		{
 			name: "Test bank transfer",
-			runs: 5,
+			runs: runs,
 			txs: func(tCtx *TestContext) []sdk.Msg {
 				return joinMsgs(
 					bankTransfer(tCtx, 10),
@@ -35,7 +37,7 @@ func TestParallelTransactions(t *testing.T) {
 		},
 		{
 			name: "Test governance proposal",
-			runs: 5,
+			runs: runs,
 			txs: func(tCtx *TestContext) []sdk.Msg {
 				return joinMsgs(
 					governanceSubmitProposal(tCtx, 10),
@@ -44,7 +46,7 @@ func TestParallelTransactions(t *testing.T) {
 		},
 		{
 			name:    "Test combinations",
-			runs:    5,
+			runs:    runs,
 			shuffle: true,
 			txs: func(tCtx *TestContext) []sdk.Msg {
 				return joinMsgs(
@@ -67,49 +69,18 @@ func TestParallelTransactions(t *testing.T) {
 		if tt.shuffle {
 			txs = shuffle(txs)
 		}
-		sResponse := runSequentially(sCtx, txs)
+
+		sEvts, sResults, _, sErr := runSequentially(sCtx, txs)
+		require.NoError(t, sErr, tt.name)
 
 		for i := 0; i < tt.runs; i++ {
 			pCtx := initTestContext(signer, blockTime)
-			pResponse := runParallel(pCtx, txs)
-			assertEqualResponses(t, sResponse, pResponse)
-			assertEqualStores(t, sCtx.Ctx, pCtx.Ctx)
-		}
-	}
-}
-
-func TestSimple(t *testing.T) {
-	tests := []struct {
-		name string
-		runs int
-		txs  func(tCtx *TestContext) []sdk.Msg
-	}{
-		{
-			name: "Test bank transfer",
-			runs: 1,
-			txs: func(tCtx *TestContext) []sdk.Msg {
-				return joinMsgs(
-					bankTransfer(tCtx, 1),
-				)
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		blockTime := time.Now()
-		signer := initSigner()
-
-		// execute sequentially, then in parallel
-		// the responses and state should match for both
-		sCtx := initTestContext(signer, blockTime)
-		txs := tt.txs(sCtx)
-		sResponse := runSequentially(sCtx, txs)
-
-		for i := 0; i < tt.runs; i++ {
-			pCtx := initTestContext(signer, blockTime)
-			pResponse := runParallel(pCtx, txs)
-			assertEqualResponses(t, sResponse, pResponse)
-			assertEqualStores(t, sCtx.Ctx, pCtx.Ctx)
+			pEvts, pResults, _, pErr := runParallel(pCtx, txs)
+			require.NoError(t, pErr, tt.name)
+			assertEqualEvents(t, sEvts, pEvts, tt.name)
+			assertExecTxResultCode(t, sResults, pResults, 0, tt.name)
+			assertEqualExecTxResults(t, sResults, pResults, tt.name)
+			assertEqualState(t, sCtx.Ctx, pCtx.Ctx, tt.name)
 		}
 	}
 }

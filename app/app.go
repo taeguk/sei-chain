@@ -240,6 +240,9 @@ var (
 	EmittedSeidVersionMetric = false
 	// EmptyAclmOpts defines a type alias for a list of wasm options.
 	EmptyACLOpts []aclkeeper.Option
+
+	// EnableOCC enables OCC, this can be overridden in tests
+	EnableOCC = true
 )
 
 var (
@@ -976,7 +979,7 @@ func (app *App) ProcessProposalHandler(ctx sdk.Context, req *abci.RequestProcess
 	// by recording the decoding results and avoid decoding again later on.
 
 	//TODO: update with logic that asserts that occ is enabled
-	ctx = ctx.WithIsOCCEnabled(true)
+	ctx = ctx.WithIsOCCEnabled(EnableOCC)
 
 	if !app.checkTotalBlockGasWanted(ctx, req.Txs) {
 		metrics.IncrFailedTotalGasWantedCheck(string(req.GetProposerAddress()))
