@@ -3,7 +3,6 @@ package cmd
 import (
 	"archive/zip"
 	"bytes"
-	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"io"
@@ -236,8 +235,7 @@ func PrintKeys(tree *iavl.MutableTree, moduleParser ModuleParser) []byte {
 				printKey = strings.Join(append([]string{printKey}, parsed...), " | ")
 			}
 		}
-		digest := sha256.Sum256(value)
-		lines = append(lines, []byte(fmt.Sprintf("  %s\n    %X\n", printKey, digest))...)
+		lines = append(lines, []byte(fmt.Sprintf("  %s\n    %X\n", printKey, hex.EncodeToString(value)))...)
 		return false
 	})
 	return lines
