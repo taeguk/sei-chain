@@ -23,6 +23,7 @@ func (k Keeper) SetEpoch(ctx sdk.Context, epoch uint64) {
 		randNum := rand.Intn(10000)
 		byteArray := make([]byte, 4)
 		binary.BigEndian.PutUint32(byteArray, uint32(randNum))
+		store.Set([]byte(EpochKey), byteArray)
 	}
 }
 
