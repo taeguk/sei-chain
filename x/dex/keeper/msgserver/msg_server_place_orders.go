@@ -2,6 +2,7 @@ package msgserver
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -85,7 +86,8 @@ func (k msgServer) PlaceOrders(goCtx context.Context, msg *types.MsgPlaceOrders)
 	}
 	k.SetNextOrderID(ctx, msg.ContractAddr, nextID)
 	ctx.EventManager().EmitEvents(events)
-	ctx.Logger().Info("Setting contract to process: ", "contract", msg.ContractAddr, "txIndex", ctx.TxIndex())
+	ctx.Logger().Info("Setting contract to process: ", "contract", msg.ContractAddr, "txIndex", ctx.TxIndex(), "txHash", sha256.Sum256(ctx.TxBytes()))
+	// log txhash
 	if msg.ContractAddr == "sei1nwnejwsdpqktusvh8qhxe5arsznjd5asdwutmaz9n5qcpl3dcmhs9eeuca" {
 		// log the transaction bytes
 		// json marshal the msg
