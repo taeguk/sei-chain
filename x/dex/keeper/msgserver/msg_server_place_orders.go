@@ -83,7 +83,7 @@ func (k msgServer) PlaceOrders(goCtx context.Context, msg *types.MsgPlaceOrders)
 	}
 	k.SetNextOrderID(ctx, msg.ContractAddr, nextID)
 	ctx.EventManager().EmitEvents(events)
-	ctx.Logger().Info("Setting contract to process: ", "contract", msg.ContractAddr)
+	ctx.Logger().Info("Setting contract to process: ", "contract", msg.ContractAddr, "txIndex", ctx.TxIndex())
 	utils.GetMemState(ctx.Context()).SetDownstreamsToProcess(ctx, msg.ContractAddr, k.GetContractWithoutGasCharge)
 	return &types.MsgPlaceOrdersResponse{
 		OrderIds: idsInResp,
