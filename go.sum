@@ -1171,16 +1171,10 @@ github.com/securego/gosec/v2 v2.11.0/go.mod h1:SX8bptShuG8reGC0XS09+a4H2BoWSJi+f
 github.com/segmentio/fasthash v1.0.3/go.mod h1:waKX8l2N8yckOgmSsXJi7x1ZfdKZ4x7KRMzBtS3oedY=
 github.com/sei-protocol/goutils v0.0.2 h1:Bfa7Sv+4CVLNM20QcpvGb81B8C5HkQC/kW1CQpIbXDA=
 github.com/sei-protocol/goutils v0.0.2/go.mod h1:iYE2DuJfEnM+APPehr2gOUXfuLuPsVxorcDO+Tzq9q8=
-github.com/sei-protocol/sei-cosmos v0.2.65-0.20231106174159-948d27a6c933 h1:bQk+XoX+7PdcRFjFOFMSjJgXSCTolHB4F/DNFzN1hFY=
-github.com/sei-protocol/sei-cosmos v0.2.65-0.20231106174159-948d27a6c933/go.mod h1:76gNJ2ItN9NdLQCDxva9YZCePkZkTIUB7eqLvdhcT+8=
-github.com/sei-protocol/sei-db v0.0.15 h1:GEwCk9uEhG/uxw61E5a6SnF+a7yl9N1urEDulmtjqbg=
-github.com/sei-protocol/sei-db v0.0.15/go.mod h1:cyrcI0croQYKhhJYiLxV3aZ+NKHvnr434lP7Qm6bACI=
 github.com/sei-protocol/sei-iavl v0.1.8-0.20230726213826-031d03d26f2d h1:FWWK/dxqrurTRR3SBlpk0v/FgXef+Ev7/d3X1KBPrTo=
 github.com/sei-protocol/sei-iavl v0.1.8-0.20230726213826-031d03d26f2d/go.mod h1:7PfkEVT5dcoQE+s/9KWdoXJ8VVVP1QpYYPLdxlkSXFk=
 github.com/sei-protocol/sei-ibc-go/v3 v3.2.0 h1:T8V75OEWKvYDraPZZKilprl7ZkahZYGo40crxNL4unc=
 github.com/sei-protocol/sei-ibc-go/v3 v3.2.0/go.mod h1:DrDYXJjWNwgv72cK1Il+BegtyGIDXcx+cnJwWGzve6o=
-github.com/sei-protocol/sei-tendermint v0.2.28 h1:5PB1a/zu6H2iDbxIMnXgDtB4QwV5PZRikguX8gASLGI=
-github.com/sei-protocol/sei-tendermint v0.2.28/go.mod h1:+BtDvAwTkE64BlxzpH9ZP7S6vUYT9wRXiZa/WW8/o4g=
 github.com/sei-protocol/sei-tm-db v0.0.5 h1:3WONKdSXEqdZZeLuWYfK5hP37TJpfaUa13vAyAlvaQY=
 github.com/sei-protocol/sei-tm-db v0.0.5/go.mod h1:Cpa6rGyczgthq7/0pI31jys2Fw0Nfrc+/jKdP1prVqY=
 github.com/sei-protocol/sei-wasmd v0.0.3-0.20230907052729-1892ba62cd5c h1:+wC1emPgUctI80idege+hK9iVw9wK/q4vm0pKNDKfxk=
