@@ -86,7 +86,9 @@ func (k msgServer) PlaceOrders(goCtx context.Context, msg *types.MsgPlaceOrders)
 	}
 	k.SetNextOrderID(ctx, msg.ContractAddr, nextID)
 	ctx.EventManager().EmitEvents(events)
-	ctx.Logger().Info("Setting contract to process: ", "contract", msg.ContractAddr, "txIndex", ctx.TxIndex(), "txHash", sha256.Sum256(ctx.TxBytes()))
+	sha := sha256.Sum256(ctx.TxBytes())
+	txHash := hex.EncodeToString(sha[:])
+	ctx.Logger().Info("Setting contract to process: ", "contract", msg.ContractAddr, "txIndex", ctx.TxIndex(), "txHash", txHash)
 	// log txhash
 	if msg.ContractAddr == "sei1nwnejwsdpqktusvh8qhxe5arsznjd5asdwutmaz9n5qcpl3dcmhs9eeuca" {
 		// log the transaction bytes
