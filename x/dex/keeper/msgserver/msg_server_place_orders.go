@@ -2,6 +2,8 @@ package msgserver
 
 import (
 	"context"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -84,6 +86,15 @@ func (k msgServer) PlaceOrders(goCtx context.Context, msg *types.MsgPlaceOrders)
 	k.SetNextOrderID(ctx, msg.ContractAddr, nextID)
 	ctx.EventManager().EmitEvents(events)
 	ctx.Logger().Info("Setting contract to process: ", "contract", msg.ContractAddr, "txIndex", ctx.TxIndex())
+	if msg.ContractAddr == "sei1nwnejwsdpqktusvh8qhxe5arsznjd5asdwutmaz9n5qcpl3dcmhs9eeuca" {
+		// log the transaction bytes
+		// json marshal the msg
+		js, e := json.Marshal(msg)
+		if e != nil {
+			panic(e)
+		}
+		ctx.Logger().Info("Transaction bytes: ", "txBytesHex", hex.EncodeToString(ctx.TxBytes()), "msg", string(js))
+	}
 	utils.GetMemState(ctx.Context()).SetDownstreamsToProcess(ctx, msg.ContractAddr, k.GetContractWithoutGasCharge)
 	return &types.MsgPlaceOrdersResponse{
 		OrderIds: idsInResp,
