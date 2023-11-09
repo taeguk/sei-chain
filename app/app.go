@@ -1296,8 +1296,11 @@ func (app *App) PartitionPrioritizedTxs(ctx sdk.Context, txs [][]byte) (prioriti
 func (app *App) BuildDependenciesAndRunTxs(ctx sdk.Context, txs [][]byte) ([]*abci.ExecTxResult, sdk.Context) {
 	var txResults []*abci.ExecTxResult
 
+	startTime := time.Now()
 	dependencyDag, err := app.AccessControlKeeper.BuildDependencyDag(ctx, app.txDecoder, app.GetAnteDepGenerator(), txs)
+	buildDagLatency := time.Since(startTime).Microseconds()
 
+	runTxStartTime := time.Now()
 	switch err {
 	case nil:
 		txResults, ctx = app.ProcessTxs(ctx, txs, dependencyDag, app.ProcessBlockConcurrent)
@@ -1310,6 +1313,8 @@ func (app *App) BuildDependenciesAndRunTxs(ctx sdk.Context, txs [][]byte) ([]*ab
 		txResults = app.ProcessBlockSynchronous(ctx, txs)
 		metrics.IncrDagBuildErrorCounter(metrics.FailedToBuild)
 	}
+	runTxLatency := time.Since(runTxStartTime).Microseconds()
+	fmt.Printf("[Debug] build dag latency: %d, run tx latency: %d\n", buildDagLatency, runTxLatency)
 
 	return txResults, ctx
 }
