@@ -1314,7 +1314,7 @@ func (app *App) BuildDependenciesAndRunTxs(ctx sdk.Context, txs [][]byte) ([]*ab
 		metrics.IncrDagBuildErrorCounter(metrics.FailedToBuild)
 	}
 	runTxLatency := time.Since(runTxStartTime).Microseconds()
-	fmt.Printf("[Debug] build dag latency: %d, run tx latency: %d\n", buildDagLatency, runTxLatency)
+	fmt.Printf("[Debug] build dag latency: %d, run %d tx latency: %d\n", buildDagLatency, len(txs), runTxLatency)
 
 	return txResults, ctx
 }
