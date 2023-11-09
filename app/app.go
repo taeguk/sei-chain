@@ -1315,6 +1315,7 @@ func (app *App) BuildDependenciesAndRunTxs(ctx sdk.Context, txs [][]byte) ([]*ab
 }
 
 func (app *App) ProcessBlock(ctx sdk.Context, txs [][]byte, req BlockProcessRequest, lastCommit abci.CommitInfo) ([]abci.Event, []*abci.ExecTxResult, abci.ResponseEndBlock, error) {
+	startTime := time.Now()
 	goCtx := app.decorateContextWithDexMemState(ctx.Context())
 	ctx = ctx.WithContext(goCtx)
 
@@ -1342,13 +1343,18 @@ func (app *App) ProcessBlock(ctx sdk.Context, txs [][]byte, req BlockProcessRequ
 	}
 
 	beginBlockResp := app.BeginBlock(ctx, beginBlockReq)
+	beginBlockLatency := time.Since(startTime).Microseconds()
+
 	events = append(events, beginBlockResp.Events...)
 
 	txResults := make([]*abci.ExecTxResult, len(txs))
 	prioritizedTxs, otherTxs, prioritizedIndices, otherIndices := app.PartitionPrioritizedTxs(ctx, txs)
 
+	pStart := time.Now()
 	// run the prioritized txs
 	prioritizedResults, ctx := app.BuildDependenciesAndRunTxs(ctx, prioritizedTxs)
+	pLatency := time.Since(pStart).Microseconds()
+
 	for relativePrioritizedIndex, originalIndex := range prioritizedIndices {
 		txResults[originalIndex] = prioritizedResults[relativePrioritizedIndex]
 	}
@@ -1360,11 +1366,15 @@ func (app *App) ProcessBlock(ctx sdk.Context, txs [][]byte, req BlockProcessRequ
 	midBlockEvents := app.MidBlock(ctx, req.GetHeight())
 	events = append(events, midBlockEvents...)
 
+	txStart := time.Now()
+
 	otherResults, ctx := app.BuildDependenciesAndRunTxs(ctx, otherTxs)
 	for relativeOtherIndex, originalIndex := range otherIndices {
 		txResults[originalIndex] = otherResults[relativeOtherIndex]
 	}
+	txLatency := time.Since(txStart).Microseconds()
 
+	endStart := time.Now()
 	// Finalize all Bank Module Transfers here so that events are included
 	lazyWriteEvents := app.BankKeeper.WriteDeferredBalances(ctx)
 	events = append(events, lazyWriteEvents...)
@@ -1374,6 +1384,8 @@ func (app *App) ProcessBlock(ctx sdk.Context, txs [][]byte, req BlockProcessRequ
 	})
 
 	events = append(events, endBlockResp.Events...)
+	endBlockLatency := time.Since(endStart).Microseconds()
+	fmt.Printf("[DEBUG] BeginBlock latency: %d, prioritizedTx latency: %d, tx latency: %d, EndBlock latency: %d\n", beginBlockLatency, pLatency, txLatency, endBlockLatency)
 	return events, txResults, endBlockResp, nil
 }
 
