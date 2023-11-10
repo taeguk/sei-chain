@@ -1339,7 +1339,6 @@ func (app *App) BuildDependenciesAndRunTxs(ctx sdk.Context, txs [][]byte) ([]*ab
 	buildDagLatency := time.Since(startTime).Microseconds()
 
 	runTxStartTime := time.Now()
-	txResults = app.ProcessBlockInParellel(ctx, txs)
 	switch err {
 	case nil:
 		txResults, ctx = app.ProcessTxs(ctx, txs, dependencyDag, app.ProcessBlockConcurrent)
