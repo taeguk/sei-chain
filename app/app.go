@@ -1089,7 +1089,11 @@ func (app *App) ProcessBlockInParellel(ctx sdk.Context, txs [][]byte) []*abci.Ex
 	txResults := make([]*abci.ExecTxResult, len(txs))
 	taskCh := make(chan TxTask, len(txs))
 	wg := sync.WaitGroup{}
-	for i := 0; i < NumWorkers; i++ {
+	numWorkers := NumWorkers
+	if len(txs) < NumWorkers && len(txs) > 0 {
+		numWorkers = len(txs)
+	}
+	for i := 0; i < numWorkers; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
