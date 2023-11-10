@@ -1090,6 +1090,7 @@ func (app *App) ProcessBlockInParellel(ctx sdk.Context, txs [][]byte) []*abci.Ex
 	taskCh := make(chan TxTask, len(txs))
 	wg := sync.WaitGroup{}
 	numWorkers := NumWorkers
+	mutex := &sync.Mutex{}
 	if len(txs) < NumWorkers && len(txs) > 0 {
 		numWorkers = len(txs)
 	}
@@ -1098,7 +1099,10 @@ func (app *App) ProcessBlockInParellel(ctx sdk.Context, txs [][]byte) []*abci.Ex
 		go func() {
 			defer wg.Done()
 			for task := range taskCh {
-				txResults[task.txIndex] = app.DeliverTxWithResult(ctx, task.tx)
+				results := app.DeliverTxWithResult(ctx, task.tx)
+				mutex.Lock()
+				txResults[task.txIndex] = results
+				mutex.Unlock()
 			}
 		}()
 	}
