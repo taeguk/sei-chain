@@ -1194,6 +1194,7 @@ func (app *App) ProcessBlockConcurrent(
 
 	var waitGroup sync.WaitGroup
 	resultChan := make(chan ChannelResult, len(txs))
+	fmt.Printf("[Debug] Processing %d Transactions in parallel... \n", len(txs))
 	// For each transaction, start goroutine and deliver TX
 	for txIndex, txBytes := range txs {
 		waitGroup.Add(1)
@@ -1334,24 +1335,23 @@ func (app *App) BuildDependenciesAndRunTxs(ctx sdk.Context, txs [][]byte) ([]*ab
 	var txResults []*abci.ExecTxResult
 
 	startTime := time.Now()
-	//dependencyDag, err := app.AccessControlKeeper.BuildDependencyDag(ctx, app.txDecoder, app.GetAnteDepGenerator(), txs)
+	dependencyDag, err := app.AccessControlKeeper.BuildDependencyDag(ctx, app.txDecoder, app.GetAnteDepGenerator(), txs)
 	buildDagLatency := time.Since(startTime).Microseconds()
 
 	runTxStartTime := time.Now()
-	txResults = app.ProcessBlockSynchronous(ctx, txs)
-	//txResults = app.ProcessBlockInParellel(ctx, txs)
-	//switch err {
-	//case nil:
-	//	txResults, ctx = app.ProcessTxs(ctx, txs, dependencyDag, app.ProcessBlockConcurrent)
-	//case acltypes.ErrGovMsgInBlock:
-	//	ctx.Logger().Info(fmt.Sprintf("Gov msg found while building DAG, processing synchronously: %s", err))
-	//	txResults = app.ProcessBlockSynchronous(ctx, txs)
-	//	metrics.IncrDagBuildErrorCounter(metrics.GovMsgInBlock)
-	//default:
-	//	ctx.Logger().Error(fmt.Sprintf("Error while building DAG, processing synchronously: %s", err))
-	//	txResults = app.ProcessBlockSynchronous(ctx, txs)
-	//	metrics.IncrDagBuildErrorCounter(metrics.FailedToBuild)
-	//}
+	txResults = app.ProcessBlockInParellel(ctx, txs)
+	switch err {
+	case nil:
+		txResults, ctx = app.ProcessTxs(ctx, txs, dependencyDag, app.ProcessBlockConcurrent)
+	case acltypes.ErrGovMsgInBlock:
+		ctx.Logger().Info(fmt.Sprintf("Gov msg found while building DAG, processing synchronously: %s", err))
+		txResults = app.ProcessBlockSynchronous(ctx, txs)
+		metrics.IncrDagBuildErrorCounter(metrics.GovMsgInBlock)
+	default:
+		ctx.Logger().Error(fmt.Sprintf("Error while building DAG, processing synchronously: %s", err))
+		txResults = app.ProcessBlockSynchronous(ctx, txs)
+		metrics.IncrDagBuildErrorCounter(metrics.FailedToBuild)
+	}
 	runTxLatency := time.Since(runTxStartTime).Microseconds()
 	fmt.Printf("[Debug] build dag latency: %d, run %d tx latency: %d\n", buildDagLatency, len(txs), runTxLatency)
 
