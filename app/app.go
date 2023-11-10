@@ -233,6 +233,8 @@ var (
 	EmittedSeidVersionMetric = false
 	// EmptyAclmOpts defines a type alias for a list of wasm options.
 	EmptyACLOpts []aclkeeper.Option
+
+	NumWorkers = 100
 )
 
 var (
@@ -1078,6 +1080,33 @@ func (app *App) ProcessBlockSynchronous(ctx sdk.Context, txs [][]byte) []*abci.E
 	return txResults
 }
 
+type TxTask struct {
+	tx      []byte
+	txIndex int
+}
+
+func (app *App) ProcessBlockInParellel(ctx sdk.Context, txs [][]byte) []*abci.ExecTxResult {
+	txResults := make([]*abci.ExecTxResult, len(txs))
+	taskCh := make(chan TxTask, len(txs))
+	wg := sync.WaitGroup{}
+	for i := 0; i < NumWorkers; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for task := range taskCh {
+				txResults[task.txIndex] = app.DeliverTxWithResult(ctx, task.tx)
+			}
+		}()
+	}
+	for index, tx := range txs {
+		task := TxTask{txIndex: index, tx: tx}
+		taskCh <- task
+	}
+	close(taskCh)
+	wg.Wait()
+	return txResults
+}
+
 // Returns a mapping of the accessOperation to the channels
 func GetChannelsFromSignalMapping(signalMapping acltypes.MessageCompletionSignalMapping) sdkacltypes.MessageAccessOpsChannelMapping {
 	channelsMapping := make(sdkacltypes.MessageAccessOpsChannelMapping)
@@ -1297,22 +1326,24 @@ func (app *App) BuildDependenciesAndRunTxs(ctx sdk.Context, txs [][]byte) ([]*ab
 	var txResults []*abci.ExecTxResult
 
 	startTime := time.Now()
-	dependencyDag, err := app.AccessControlKeeper.BuildDependencyDag(ctx, app.txDecoder, app.GetAnteDepGenerator(), txs)
+	//dependencyDag, err := app.AccessControlKeeper.BuildDependencyDag(ctx, app.txDecoder, app.GetAnteDepGenerator(), txs)
 	buildDagLatency := time.Since(startTime).Microseconds()
 
 	runTxStartTime := time.Now()
-	switch err {
-	case nil:
-		txResults, ctx = app.ProcessTxs(ctx, txs, dependencyDag, app.ProcessBlockConcurrent)
-	case acltypes.ErrGovMsgInBlock:
-		ctx.Logger().Info(fmt.Sprintf("Gov msg found while building DAG, processing synchronously: %s", err))
-		txResults = app.ProcessBlockSynchronous(ctx, txs)
-		metrics.IncrDagBuildErrorCounter(metrics.GovMsgInBlock)
-	default:
-		ctx.Logger().Error(fmt.Sprintf("Error while building DAG, processing synchronously: %s", err))
-		txResults = app.ProcessBlockSynchronous(ctx, txs)
-		metrics.IncrDagBuildErrorCounter(metrics.FailedToBuild)
-	}
+
+	txResults = app.ProcessBlockInParellel(ctx, txs)
+	//switch err {
+	//case nil:
+	//	txResults, ctx = app.ProcessTxs(ctx, txs, dependencyDag, app.ProcessBlockConcurrent)
+	//case acltypes.ErrGovMsgInBlock:
+	//	ctx.Logger().Info(fmt.Sprintf("Gov msg found while building DAG, processing synchronously: %s", err))
+	//	txResults = app.ProcessBlockSynchronous(ctx, txs)
+	//	metrics.IncrDagBuildErrorCounter(metrics.GovMsgInBlock)
+	//default:
+	//	ctx.Logger().Error(fmt.Sprintf("Error while building DAG, processing synchronously: %s", err))
+	//	txResults = app.ProcessBlockSynchronous(ctx, txs)
+	//	metrics.IncrDagBuildErrorCounter(metrics.FailedToBuild)
+	//}
 	runTxLatency := time.Since(runTxStartTime).Microseconds()
 	fmt.Printf("[Debug] build dag latency: %d, run %d tx latency: %d\n", buildDagLatency, len(txs), runTxLatency)
 
