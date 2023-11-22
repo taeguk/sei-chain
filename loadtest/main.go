@@ -86,7 +86,8 @@ func runOnce(config Config) {
 	fmt.Printf("Running with \n %s \n", string(configString))
 
 	fmt.Printf("%s - Starting block prepare\n", time.Now().Format("2006-01-02T15:04:05"))
-	workgroups, sendersList := client.BuildTxs()
+	txs := client.BuildTxs()
+	workgroups, sendersList := client.GetSenders(txs)
 
 	go client.SendTxs(workgroups, sendersList)
 
@@ -115,15 +116,13 @@ func (c *LoadTestClient) getRandomMessageType(messageTypes []string) string {
 	return messageType
 }
 
-func (c *LoadTestClient) generateMessage(config Config, key cryptotypes.PrivKey, msgPerTx uint64) ([]sdk.Msg, bool, cryptotypes.PrivKey, uint64, int64) {
+func (c *LoadTestClient) generateMessage(config Config, key cryptotypes.PrivKey, msgPerTx uint64) ([]sdk.Msg, bool, uint64, int64) {
 	var msgs []sdk.Msg
 	messageTypes := strings.Split(config.MessageType, ",")
 	messageType := c.getRandomMessageType(messageTypes)
 	fmt.Printf("Message type: %s\n", messageType)
 
 	defer IncrTxMessageType(messageType)
-
-	signer := key
 
 	defaultMessageTypeConfig := c.LoadTestConfig.PerMessageConfigs["default"]
 	gas := defaultMessageTypeConfig.Gas
@@ -188,7 +187,6 @@ func (c *LoadTestClient) generateMessage(config Config, key cryptotypes.PrivKey,
 				Amount: sdk.NewInt(10000000),
 			}),
 		}}
-		signer = adminKey
 		gas = 10000000
 		fee = 1000000
 		fmt.Printf("Distribute rewards to %s \n", sdk.AccAddress(key.PubKey().Address()).String())
@@ -205,7 +203,6 @@ func (c *LoadTestClient) generateMessage(config Config, key cryptotypes.PrivKey,
 			randomValidatorAddr,
 		)}
 		fmt.Printf("Collecting rewards from %s \n", operatorAddress)
-		signer = adminKey
 		gas = 10000000
 		fee = 1000000
 	case Dex:
@@ -329,9 +326,9 @@ func (c *LoadTestClient) generateMessage(config Config, key cryptotypes.PrivKey,
 	}
 
 	if strings.Contains(config.MessageType, "failure") {
-		return msgs, true, signer, gas, int64(fee)
+		return msgs, true, gas, int64(fee)
 	}
-	return msgs, false, signer, gas, int64(fee)
+	return msgs, false, gas, int64(fee)
 }
 
 func sampleDexOrderType(config Config) (orderType dextypes.OrderType) {

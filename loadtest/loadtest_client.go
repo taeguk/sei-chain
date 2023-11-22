@@ -46,6 +46,11 @@ type LoadTestClient struct {
 	isAdminMessageMapping map[string]bool
 }
 
+type LoadtestTx struct {
+	Tx              []byte
+	FailureExpected bool
+}
+
 func NewLoadTestClient(config Config) *LoadTestClient {
 	var dialOptions []grpc.DialOption
 
@@ -115,47 +120,52 @@ func (c *LoadTestClient) WriteTxHashToFile() {
 	}
 }
 
-func (c *LoadTestClient) BuildTxs() (workgroups []*sync.WaitGroup, sendersList [][]func()) {
+func (c *LoadTestClient) BuildTxs() []LoadtestTx {
 	config := c.LoadTestConfig
-	numberOfAccounts := config.TxsPerBlock / config.MsgsPerTx * 2 // * 2 because we need two sets of accounts
-	activeAccounts := []int{}
-	inactiveAccounts := []int{}
+	numberOfAccounts := int(config.TxsPerBlock / config.MsgsPerTx)
 
-	for i := 0; i < int(numberOfAccounts); i++ {
-		if i%2 == 0 {
-			activeAccounts = append(activeAccounts, i)
-		} else {
-			inactiveAccounts = append(inactiveAccounts, i)
-		}
+	var txs []LoadtestTx
+	for account := 0; account < numberOfAccounts; account++ {
+		accountIdentifier := fmt.Sprint(account)
+		accountKeyPath := c.SignerClient.GetTestAccountKeyPath(uint64(account))
+		key := c.SignerClient.GetKey(accountIdentifier, "test", accountKeyPath)
+
+		msgs, failureExpected, gas, fee := c.generateMessage(config, key, config.MsgsPerTx)
+		txBuilder := TestConfig.TxConfig.NewTxBuilder()
+		_ = txBuilder.SetMsgs(msgs...)
+		txBuilder.SetGasLimit(gas)
+		txBuilder.SetFeeAmount([]types.Coin{
+			types.NewCoin("usei", types.NewInt(fee)),
+		})
+		c.SignerClient.SignTx(c.ChainID, &txBuilder, key, 1)
+		tx, _ := TestConfig.TxConfig.TxEncoder()((txBuilder).GetTx())
+		txs = append(txs, LoadtestTx{
+			Tx:              tx,
+			FailureExpected: failureExpected,
+		})
 	}
 
+	return txs
+}
+
+func (c *LoadTestClient) GetSenders(txs []LoadtestTx) (workgroups []*sync.WaitGroup, sendersList [][]func()) {
+	config := c.LoadTestConfig
 	valKeys := c.SignerClient.GetValKeys()
 
 	for i := 0; i < int(config.Rounds); i++ {
 		fmt.Printf("Preparing %d-th round\n", i)
-
 		wg := &sync.WaitGroup{}
 		var senders []func()
 		workgroups = append(workgroups, wg)
 		c.generatedAdminMessageForBlock = false
-		for j, account := range activeAccounts {
-			accountIdentifier := fmt.Sprint(account)
-			accountKeyPath := c.SignerClient.GetTestAccountKeyPath(uint64(account))
-			key := c.SignerClient.GetKey(accountIdentifier, "test", accountKeyPath)
 
-			msgs, failureExpected, signer, gas, fee := c.generateMessage(config, key, config.MsgsPerTx)
-			txBuilder := TestConfig.TxConfig.NewTxBuilder()
-			_ = txBuilder.SetMsgs(msgs...)
-			seqDelta := uint64(i / 2)
+		senders = append(senders, c.GenerateOracleSenders(i, config, valKeys, wg)...)
+		for j, tx := range txs {
 			mode := typestx.BroadcastMode_BROADCAST_MODE_SYNC
-			if j == len(activeAccounts)-1 {
+			if j == len(txs)-1 {
 				mode = typestx.BroadcastMode_BROADCAST_MODE_BLOCK
 			}
-			// Note: There is a potential race condition here with seqnos
-			// in which a later seqno is delievered before an earlier seqno
-			// In practice, we haven't run into this issue so we'll leave this
-			// as is.
-			sender := SendTx(signer, &txBuilder, mode, seqDelta, failureExpected, *c, gas, fee)
+			sender := SendTx(tx.Tx, mode, tx.FailureExpected, *c)
 			wg.Add(1)
 			senders = append(senders, func() {
 				defer wg.Done()
@@ -163,10 +173,7 @@ func (c *LoadTestClient) BuildTxs() (workgroups []*sync.WaitGroup, sendersList [
 			})
 		}
 
-		senders = append(senders, c.GenerateOracleSenders(i, config, valKeys, wg)...)
-
 		sendersList = append(sendersList, senders)
-		inactiveAccounts, activeAccounts = activeAccounts, inactiveAccounts
 	}
 
 	return workgroups, sendersList
@@ -179,10 +186,16 @@ func (c *LoadTestClient) GenerateOracleSenders(i int, config Config, valKeys []c
 			// generate oracle tx
 			msg := generateOracleMessage(valKey)
 			txBuilder := TestConfig.TxConfig.NewTxBuilder()
+			txBuilder.SetGasLimit(30000)
+			txBuilder.SetFeeAmount([]types.Coin{
+				types.NewCoin("usei", types.NewInt(100000)),
+			})
 			_ = txBuilder.SetMsgs(msg)
 			seqDelta := uint64(i / 2)
+			c.SignerClient.SignTx(c.ChainID, &txBuilder, valKey, seqDelta)
+			txBytes, _ := TestConfig.TxConfig.TxEncoder()((txBuilder).GetTx())
 			mode := typestx.BroadcastMode_BROADCAST_MODE_SYNC
-			sender := SendTx(valKey, &txBuilder, mode, seqDelta, false, *c, 30000, 100000)
+			sender := SendTx(txBytes, mode, false, *c)
 			waitGroup.Add(1)
 			senders = append(senders, func() {
 				defer waitGroup.Done()

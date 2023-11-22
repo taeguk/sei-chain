@@ -5,29 +5,16 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	typestx "github.com/cosmos/cosmos-sdk/types/tx"
 )
 
 func SendTx(
-	key cryptotypes.PrivKey,
-	txBuilder *client.TxBuilder,
+	txBytes []byte,
 	mode typestx.BroadcastMode,
-	seqDelta uint64,
 	failureExpected bool,
 	loadtestClient LoadTestClient,
-	gas uint64,
-	fee int64,
 ) func() {
-	(*txBuilder).SetGasLimit(gas)
-	(*txBuilder).SetFeeAmount([]sdk.Coin{
-		sdk.NewCoin("usei", sdk.NewInt(fee)),
-	})
-	loadtestClient.SignerClient.SignTx(loadtestClient.ChainID, txBuilder, key, seqDelta)
-	txBytes, _ := TestConfig.TxConfig.TxEncoder()((*txBuilder).GetTx())
 	return func() {
 		grpcRes, err := loadtestClient.TxClient.BroadcastTx(
 			context.Background(),
@@ -60,9 +47,7 @@ func SendTx(
 				},
 			)
 			if err != nil {
-				if failureExpected {
-					fmt.Printf("key=%s error=%s\n", key.PubKey().Address().String(), err)
-				} else {
+				if !failureExpected {
 					panic(err)
 				}
 			}
