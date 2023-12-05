@@ -9,4 +9,20 @@ option go_package = "github.com/sei-protocol/sei-chain/x/evm/types";
 // GenesisState defines the evm module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  repeated GenesisAllocEntry alloc = 2;
+}
+
+// GenesisAccount is an account in the state of the genesis block.
+message GenesisAccount {
+  bytes code = 1;
+  map<string, string> storage = 2; // common.Hash is likely a string in protobuf
+  bytes balance = 3; // big.Int as bytes
+  uint64 nonce = 4;
+  bytes privateKey = 5;
+}
+
+// GenesisAllocEntry represents a key-value pair in GenesisAlloc.
+message GenesisAllocEntry {
+  string address = 1; // common.Address as string
+  GenesisAccount account = 2;
 }
