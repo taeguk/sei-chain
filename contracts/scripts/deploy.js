@@ -18,31 +18,16 @@ async function main() {
         "Deploying contracts with the account:",
         deployer.address
     );
-    // const CW20ERC20Wrapper = await ethers.getContractFactory("CW20ERC20Wrapper");
-    // console.log(CW20ERC20Wrapper.interface.functions); // This will log all the functions of the contract
-
-    // let cW20ERC20Wrapper = await CW20ERC20Wrapper.deploy(contractAddress, "BTOK", "TOK");
-    // console.log(`contractAddress as EVM address: ${cW20ERC20Wrapper.target}`);
-
-    // // test balanceOf
-    // let addressToCheck = deployer.address;
-    // let balance = await cW20ERC20Wrapper.callStatic.balanceOf(addressToCheck);
-    // console.log(`Balance of ${addressToCheck}: ${balance}`);
-
     const CW20ERC20Wrapper = await ethers.getContractFactory("CW20ERC20Wrapper");
     console.log(CW20ERC20Wrapper.interface.functions); // This will log all the functions of the contract
 
     let cW20ERC20Wrapper = await CW20ERC20Wrapper.deploy(contractAddress, "BTOK", "TOK");
-    console.log(cW20ERC20Wrapper); // This will log the contract instance
+    console.log(`contractAddress as EVM address: ${cW20ERC20Wrapper.target}`);
 
-    if (typeof cW20ERC20Wrapper.callStatic.balanceOf === 'function') {
+    // test balanceOf
     let addressToCheck = deployer.address;
     let balance = await cW20ERC20Wrapper.callStatic.balanceOf(addressToCheck);
     console.log(`Balance of ${addressToCheck}: ${balance}`);
-    } else {
-    console.error('cW20ERC20Wrapper.callStatic.balanceOf is not a function');
-    }
-    
 }
 
 async function fundDeployer(deployerAddress) {

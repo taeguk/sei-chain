@@ -2,7 +2,6 @@ package evmrpc_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 	"time"
 
@@ -56,7 +55,6 @@ func TestSubscribeNewHeads(t *testing.T) {
 			if !receivedSubMsg || !receivedEvents {
 				t.Fatal("No message received within 5 seconds")
 			}
-			fmt.Println("done")
 			return
 		}
 	}
