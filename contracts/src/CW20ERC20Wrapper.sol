@@ -39,8 +39,7 @@ contract CW20ERC20Wrapper is ERC20 {
         string memory ownerAddr = _formatPayload("address", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
         string memory req = _curlyBrace(_formatPayload("balance", _curlyBrace(ownerAddr)));
         bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
-        bytes memory balanceBytes = JsonPrecompile.extractAsBytes(response, "balance");
-        return bytesToUint256(balanceBytes);
+        return JsonPrecompile.extractAsUint256(response, "balance");
     }
 
     function callWasmd(string memory req) public view returns (bytes memory) {
