@@ -42,49 +42,48 @@ contract CW20ERC20Wrapper is ERC20 {
         return JsonPrecompile.extractAsUint256(response, "balance");
     }
 
-    function callWasmd(string memory req) public view returns (bytes memory) {
-        bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
-        return response;
-    }
+    // function callWasmd(string memory req) public view returns (bytes memory) {
+    //     bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
+    //     return response;
+    // }
 
-    function bytesToUint256(bytes memory byteArray) public pure returns (uint256) {
-        require(byteArray.length <= 32, "Array too long");
+    // function bytesToUint256(bytes memory byteArray) public pure returns (uint256) {
+    //     require(byteArray.length <= 32, "Array too long");
 
-        uint256 value;
-        for (uint i = 0; i < byteArray.length; i++) {
-            value = (value << 8) | uint256(uint8(byteArray[i]));
-        }
-        return value;
-    }
+    //     uint256 value;
+    //     for (uint i = 0; i < byteArray.length; i++) {
+    //         value = (value << 8) | uint256(uint8(byteArray[i]));
+    //     }
+    //     return value;
+    // }
 
-    function getSeiAddr(address evmAddr) public view returns (string memory) {
-        return AddrPrecompile.getSeiAddr(evmAddr);
-    }
+    // function getSeiAddr(address evmAddr) public view returns (string memory) {
+    //     return AddrPrecompile.getSeiAddr(evmAddr);
+    // }
 
-    function getOwnerAddr(address owner) public view returns (string memory) {
-        string memory ownerAddr = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
-        return ownerAddr;
-    }
+    // function getOwnerAddr(address owner) public view returns (string memory) {
+    //     string memory ownerAddr = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
+    //     return ownerAddr;
+    // }
 
-    function req(address owner) public view returns (string memory) {
-        string memory ownerAddr = _formatPayload("address", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
-        string memory req = _curlyBrace(_formatPayload("balance", _curlyBrace(ownerAddr)));
-        return req;
-    }
+    // function req(address owner) public view returns (string memory) {
+    //     string memory ownerAddr = _formatPayload("address", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
+    //     string memory req = _curlyBrace(_formatPayload("balance", _curlyBrace(ownerAddr)));
+    //     return req;
+    // }
 
-    function response(address owner) public view returns (bytes memory) {
-        require(owner != address(0), "ERC20: balance query for the zero address");
-        string memory ownerAddr = _formatPayload("address", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
-        string memory req = _curlyBrace(_formatPayload("balance", _curlyBrace(ownerAddr)));
-        bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
-        return response;
-    }
+    // function response(address owner) public view returns (bytes memory) {
+    //     require(owner != address(0), "ERC20: balance query for the zero address");
+    //     string memory ownerAddr = _formatPayload("address", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
+    //     string memory req = _curlyBrace(_formatPayload("balance", _curlyBrace(ownerAddr)));
+    //     bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
+    //     return response;
+    // }
 
     function totalSupply() public view override returns (uint256) {
         string memory req = _curlyBrace(_formatPayload("total_supply", ""));
         bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
-        bytes memory supply = JsonPrecompile.extractAsBytes(response, "total_supply");
-        return uint256(abi.decode(supply, (uint256)));
+        return JsonPrecompile.extractAsUint256(response, "total_supply");
     }
 
     function allowance(address owner, address spender) public view override returns (uint256) {
