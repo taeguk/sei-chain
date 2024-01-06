@@ -42,10 +42,17 @@ contract CW20ERC20Wrapper is ERC20 {
         return JsonPrecompile.extractAsUint256(response, "balance");
     }
 
-    // function callWasmd(string memory req) public view returns (bytes memory) {
-    //     bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
-    //     return response;
-    // }
+    function reqBalanceOf(address owner) public view returns (string memory) {
+        require(owner != address(0), "ERC20: balance query for the zero address");
+        string memory ownerAddr = _formatPayload("address", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
+        string memory req = _curlyBrace(_formatPayload("balance", _curlyBrace(ownerAddr)));
+        return req;
+    }
+
+    function callWasmd(string memory req) public view returns (bytes memory) {
+        bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
+        return response;
+    }
 
     // function bytesToUint256(bytes memory byteArray) public pure returns (uint256) {
     //     require(byteArray.length <= 32, "Array too long");
@@ -81,22 +88,58 @@ contract CW20ERC20Wrapper is ERC20 {
     // }
 
     function totalSupply() public view override returns (uint256) {
-        string memory req = _curlyBrace(_formatPayload("total_supply", ""));
+        string memory req = _curlyBrace(_formatPayload("token_info", "{}"));
         bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
         return JsonPrecompile.extractAsUint256(response, "total_supply");
     }
+
+    // function req() public view returns (string memory) {
+    //     string memory req = _curlyBrace(_formatPayload("token_info", "{}"));
+    //     return req;
+    // }
+
+    // function response() public view returns (bytes memory) {
+    //     string memory req = _curlyBrace(_formatPayload("token_info", "{}"));
+    //     bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
+    //     return response;
+    // }
 
     function allowance(address owner, address spender) public view override returns (uint256) {
         string memory o = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
         string memory s = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(spender)));
         string memory req = _curlyBrace(_formatPayload("allowance", _curlyBrace(_join(o, s, ","))));
         bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
-        bytes memory allowanceBytes = JsonPrecompile.extractAsBytes(response, "allowance");
-        bytes memory res = JsonPrecompile.extractAsBytes(allowanceBytes, "allowance");
-        return uint256(abi.decode(res, (uint256)));
+        return JsonPrecompile.extractAsUint256(response, "allowance");
+    }
+
+    function req(address owner, address spender) public view returns (string memory) {
+        string memory o = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
+        string memory s = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(spender)));
+        string memory req = _curlyBrace(_formatPayload("allowance", _curlyBrace(_join(o, s, ","))));
+        return req;
     }
 
     // Transactions
+    function approve(address spender, uint256 amount) public override returns (bool) {
+        string memory spenderAddr = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(spender)));
+        string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(amount)));
+        string memory req = _curlyBrace(_formatPayload("approve", _curlyBrace(_join(spenderAddr, amt, ","))));
+        _execute(bytes(req));
+        emit Approval(msg.sender, spender, amount);
+        return true;
+    }
+
+    function approveReq(address spender, uint256 amount) public returns (string memory) {
+        string memory spenderAddr = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(spender)));
+        string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(amount)));
+        string memory req = _curlyBrace(_formatPayload("approve", _curlyBrace(_join(spenderAddr, amt, ","))));
+        return req;
+    }
+
+    function executeReq(string memory req) public returns (bytes memory) {
+        return _execute(bytes(req));
+    }
+
     function transfer(address to, uint256 amount) public override returns (bool) {
         require(to != address(0), "ERC20: transfer to the zero address");
         string memory recipient = _formatPayload("recipient", _doubleQuotes(AddrPrecompile.getSeiAddr(to)));
@@ -104,15 +147,6 @@ contract CW20ERC20Wrapper is ERC20 {
         string memory req = _curlyBrace(_formatPayload("transfer", _curlyBrace(_join(recipient, amt, ","))));
         _execute(bytes(req));
         emit Transfer(msg.sender, to, amount);
-        return true;
-    }
-
-    function approve(address spender, uint256 amount) public override returns (bool) {
-        string memory spenderAddr = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(spender)));
-        string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(amount)));
-        string memory req = _curlyBrace(_formatPayload("approve", _curlyBrace(_join(spenderAddr, amt, ","))));
-        _execute(bytes(req));
-        emit Approval(msg.sender, spender, amount);
         return true;
     }
 
