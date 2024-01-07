@@ -64,9 +64,9 @@ contract CW20ERC20Wrapper is ERC20 {
     //     return value;
     // }
 
-    // function getSeiAddr(address evmAddr) public view returns (string memory) {
-    //     return AddrPrecompile.getSeiAddr(evmAddr);
-    // }
+    function getSeiAddr(address evmAddr) public view returns (string memory) {
+        return AddrPrecompile.getSeiAddr(evmAddr);
+    }
 
     // function getOwnerAddr(address owner) public view returns (string memory) {
     //     string memory ownerAddr = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
@@ -123,7 +123,7 @@ contract CW20ERC20Wrapper is ERC20 {
     function approve(address spender, uint256 amount) public override returns (bool) {
         string memory spenderAddr = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(spender)));
         string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(amount)));
-        string memory req = _curlyBrace(_formatPayload("approve", _curlyBrace(_join(spenderAddr, amt, ","))));
+        string memory req = _curlyBrace(_formatPayload("increase_allowance", _curlyBrace(_join(spenderAddr, amt, ","))));
         _execute(bytes(req));
         emit Approval(msg.sender, spender, amount);
         return true;
@@ -132,7 +132,7 @@ contract CW20ERC20Wrapper is ERC20 {
     function approveReq(address spender, uint256 amount) public returns (string memory) {
         string memory spenderAddr = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(spender)));
         string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(amount)));
-        string memory req = _curlyBrace(_formatPayload("approve", _curlyBrace(_join(spenderAddr, amt, ","))));
+        string memory req = _curlyBrace(_formatPayload("increase_allowance", _curlyBrace(_join(spenderAddr, amt, ","))));
         return req;
     }
 
@@ -148,6 +148,14 @@ contract CW20ERC20Wrapper is ERC20 {
         _execute(bytes(req));
         emit Transfer(msg.sender, to, amount);
         return true;
+    }
+
+    function transferReq(address to, uint256 amount) public returns (string memory) {
+        require(to != address(0), "ERC20: transfer to the zero address");
+        string memory recipient = _formatPayload("recipient", _doubleQuotes(AddrPrecompile.getSeiAddr(to)));
+        string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(amount)));
+        string memory req = _curlyBrace(_formatPayload("transfer", _curlyBrace(_join(recipient, amt, ","))));
+        return req;
     }
 
     function transferFrom(address from, address to, uint256 amount) public override returns (bool) {

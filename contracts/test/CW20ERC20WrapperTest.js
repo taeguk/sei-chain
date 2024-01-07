@@ -31,7 +31,10 @@ describe("CW20ERC20WrapperTest", function () {
         contractAddress = await instantiateWasm(codeId, adminAddr);
         console.log(`contractAddress: ${contractAddress}`)
         // deploy the CW20ERC20Wrapper solidity contract with the contractAddress passed in
-        const [deployer] = await hre.ethers.getSigners();
+        // let signers = await ethers.getSigners();
+        // owner = signers[0]
+        let signers = await hre.ethers.getSigners();
+        deployer = signers[0]
         await fundDeployer(deployer.address);
     
         console.log(
@@ -44,7 +47,7 @@ describe("CW20ERC20WrapperTest", function () {
         cW20ERC20Wrapper = await CW20ERC20Wrapper.deploy(contractAddress, "BTOK", "TOK");
         await cW20ERC20Wrapper.waitForDeployment();
         console.log("CW20ERC20Wrapper address = ", cW20ERC20Wrapper.target)
-        deployerAddr = await deployer.getAddress();
+        deployerAddr = deployer.address
     });
 
     describe("balanceOf", function () {
@@ -72,6 +75,21 @@ describe("CW20ERC20WrapperTest", function () {
             let allowance = await cW20ERC20Wrapper.allowance(owner, spender);
             console.log(`Allowance for ${spender} from ${owner}: ${allowance}`);
             expect(Number(allowance)).to.equal(0); // Replace with the expected allowance
+        });
+    });
+
+    describe("approve", function () {
+        it("approve should work", async function () {
+            let spender = deployerAddr; // Replace with the spender's address
+            let amount = 1000000; // Replace with the amount to approve
+            await cW20ERC20Wrapper.approve(spender, amount);
+            await delay();
+            // await tx.wait();
+            // console.log(`approve tx: ${tx}`);
+            let allowance = await cW20ERC20Wrapper.allowance(deployerAddr, spender);
+            await delay();
+            console.log(`Allowance for ${spender} from ${deployerAddr}: ${allowance}`);
+            expect(Number(allowance)).to.equal(amount);
         });
     });
 });
