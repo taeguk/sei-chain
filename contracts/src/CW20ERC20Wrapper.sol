@@ -54,6 +54,11 @@ contract CW20ERC20Wrapper is ERC20 {
         return response;
     }
 
+    function callWasmdString(string memory req) public view returns (string memory) {
+        bytes memory response = WasmdPrecompile.query(Cw20Address, bytes(req));
+        return abi.decode(response, (string));
+    }
+
     // function bytesToUint256(bytes memory byteArray) public pure returns (uint256) {
     //     require(byteArray.length <= 32, "Array too long");
 
@@ -112,7 +117,7 @@ contract CW20ERC20Wrapper is ERC20 {
         return JsonPrecompile.extractAsUint256(response, "allowance");
     }
 
-    function req(address owner, address spender) public view returns (string memory) {
+    function allowanceReq(address owner, address spender) public view returns (string memory) {
         string memory o = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getSeiAddr(owner)));
         string memory s = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(spender)));
         string memory req = _curlyBrace(_formatPayload("allowance", _curlyBrace(_join(o, s, ","))));
@@ -150,7 +155,7 @@ contract CW20ERC20Wrapper is ERC20 {
         return true;
     }
 
-    function transferReq(address to, uint256 amount) public returns (string memory) {
+    function transferReq(address to, uint256 amount) public view returns (string memory) {
         require(to != address(0), "ERC20: transfer to the zero address");
         string memory recipient = _formatPayload("recipient", _doubleQuotes(AddrPrecompile.getSeiAddr(to)));
         string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(amount)));

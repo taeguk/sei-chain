@@ -28,6 +28,8 @@ module.exports = {
     // },
     seilocal: {
       url: "http://127.0.0.1:8545",
+      address: ["0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52"],
+      accounts: ["0x57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e"], // Replace with your private key
     }
   },
 };
