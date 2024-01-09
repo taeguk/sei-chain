@@ -174,11 +174,19 @@ describe("CW20ERC20WrapperTest", function () {
             const tfReq = await cW20ERC20Wrapper.transferFromReq(deployerAddrETH, recipient, amountToTransfer);
             console.log("transferFrom: transferFromReq = ", tfReq);
 
+            // check balanceOf sender (deployerAddr) to ensure it went down
+            const balanceOfSenderBefore = await cW20ERC20Wrapper.balanceOf(deployerAddrETH);
+
             // have deployer transferFrom spender to recipient
             console.log("transferFrom: doing actual transferFrom...")
-            const tfTx = await cW20ERC20Wrapper.transferFrom(deployerAddrETH, recipient, amountToTransfer, {from: spender});
-            const tfReceipt = await tfTx.wait();
-            console.log("transferFrom receipt = ", tfReceipt);
+            // const tfTx = await cW20ERC20Wrapper.transferFrom(deployerAddrETH, recipient, amountToTransfer, {from: spender});
+            const spenderPrivateKey = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"; // Replace with the spender's private key
+            const spenderWallet = new ethers.Wallet(spenderPrivateKey);
+            const spenderSigner = spenderWallet.connect(ethers.provider);
+            const tfTx = await cW20ERC20Wrapper.connect(spenderSigner).transferFrom(deployerAddrETH, recipient, amountToTransfer);
+            // const spenderSigner = ethers.provider.getSigner(spender);
+            // const tfTx = await cW20ERC20Wrapper.connect(spenderSigner).transferFrom(deployerAddrETH, recipient, amountToTransfer);
+            await tfTx.wait();
 
             // check balance diff to ensure transfer went through
             console.log("transferFrom: checking balanceOf recipient after transfer...")
@@ -186,7 +194,10 @@ describe("CW20ERC20WrapperTest", function () {
             const diff = balanceOfRecipientAfter - balanceOfRecipientBefore;
             expect(diff).to.equal(amountToTransfer);
 
-            // TODO: check balanceOf of sender (deployerAddr) to ensure it went down
+            // check balanceOf sender (deployerAddr) to ensure it went down
+            const balanceOfSenderAfter = await cW20ERC20Wrapper.balanceOf(deployerAddrETH);
+            const diff2 = balanceOfSenderBefore - balanceOfSenderAfter;
+            expect(diff2).to.equal(amountToTransfer);
         });
 
         it("transferFrom should not work if allowance is not enough", async function () {
@@ -298,9 +309,10 @@ async function getAdmin() {
 async function instantiateWasm(codeId, adminAddr) {
     // Wrap the exec function in a Promise
     console.log("instantiateWasm: will fund admin addr = ", adminAddr);
+    let secondAnvilAddrSEI = "sei1cjzphr67dug28rw9ueewrqllmxlqe5f0awulvy";
     console.log("instantiateWasm: will fund secondAnvilAddr = ", secondAnvilAddrSEI);
     let contractAddress = await new Promise((resolve, reject) => {
-        const cmd = `seid tx wasm instantiate ${codeId} '{ "name": "BTOK", "symbol": "BTOK", "decimals": 6, "initial_balances": [ { "address": "${adminAddr}", "amount": "1000000" }, { "address": "${secondAnvilAddr}", "amount": "1000000"} ], "mint": { "minter": "${adminAddr}", "cap": "99900000000" } }' --label cw20-test --admin ${adminAddr} --from admin --gas=5000000 --fees=1000000usei -y --broadcast-mode block`;
+        const cmd = `seid tx wasm instantiate ${codeId} '{ "name": "BTOK", "symbol": "BTOK", "decimals": 6, "initial_balances": [ { "address": "${adminAddr}", "amount": "1000000" }, { "address": "${secondAnvilAddrSEI}", "amount": "1000000"} ], "mint": { "minter": "${adminAddr}", "cap": "99900000000" } }' --label cw20-test --admin ${adminAddr} --from admin --gas=5000000 --fees=1000000usei -y --broadcast-mode block`;
         exec(cmd, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
