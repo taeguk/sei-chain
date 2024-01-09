@@ -3,6 +3,8 @@ const {isBigNumber} = require("hardhat/common");
 const { exec } = require("child_process"); // Importing exec from child_process
 const { cons } = require("fp-ts/lib/NonEmptyArray2v");
 
+// Run instructions
+// Should be run on a local chain using: `npx hardhat test --network seilocal test/CW20ERC20WrapperTest.js`
 
 async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -16,7 +18,7 @@ function debug(msg) {
   //console.log(msg)
 }
 
-const CW20_BASE_WASM_LOCATION = "../cw20_base.wasm";
+const CW20_BASE_WASM_LOCATION = "wasm/cw20_base.wasm";
 const secondAnvilAddrETH = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
 const secondAnvilAddrSEI = "sei1cjzphr67dug28rw9ueewrqllmxlqe5f0awulvy";
 const thirdAnvilAddrETH = "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC";
@@ -66,6 +68,30 @@ describe("CW20ERC20WrapperTest", function () {
         cW20ERC20Wrapper = await CW20ERC20Wrapper.deploy(contractAddress, "BTOK", "TOK");
         await cW20ERC20Wrapper.waitForDeployment();
         console.log("CW20ERC20Wrapper address = ", cW20ERC20Wrapper.target)
+    });
+
+    describe("name", function () {
+        it("name should work", async function () {
+            const name = await cW20ERC20Wrapper.name();
+            console.log(`Name: ${name}`);
+            expect(name).to.equal("BTOK");
+        });
+    });
+
+    describe("symbol", function () {
+        it("symbol should work", async function () {
+            const symbol = await cW20ERC20Wrapper.symbol();
+            console.log(`Symbol: ${symbol}`);
+            expect(symbol).to.equal("TOK"); // Replace "TOK" with the expected symbol
+        });
+    });
+
+    describe("decimals", function () {
+        it("decimals should work", async function () {
+            const decimals = await cW20ERC20Wrapper.decimals();
+            console.log(`Decimals: ${decimals}`);
+            expect(Number(decimals)).to.be.greaterThan(0);
+        });
     });
 
     describe("balanceOf", function () {
