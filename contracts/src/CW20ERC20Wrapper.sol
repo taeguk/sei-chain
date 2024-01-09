@@ -126,10 +126,18 @@ contract CW20ERC20Wrapper is ERC20 {
 
     // Transactions
     function approve(address spender, uint256 amount) public override returns (bool) {
-        string memory spenderAddr = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(spender)));
-        string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(amount)));
-        string memory req = _curlyBrace(_formatPayload("increase_allowance", _curlyBrace(_join(spenderAddr, amt, ","))));
-        _execute(bytes(req));
+        uint256 currentAllowance = allowance(msg.sender, spender);
+        if (currentAllowance > amount) {
+            string memory spenderAddr = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(spender)));
+            string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(currentAllowance - amount)));
+            string memory req = _curlyBrace(_formatPayload("decrease_allowance", _curlyBrace(_join(spenderAddr, amt, ","))));
+            _execute(bytes(req));
+        } else if (currentAllowance < amount) {
+            string memory spenderAddr = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(spender)));
+            string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(amount - currentAllowance)));
+            string memory req = _curlyBrace(_formatPayload("increase_allowance", _curlyBrace(_join(spenderAddr, amt, ","))));
+            _execute(bytes(req));
+        }
         emit Approval(msg.sender, spender, amount);
         return true;
     }

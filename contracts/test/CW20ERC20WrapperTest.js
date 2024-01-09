@@ -17,6 +17,13 @@ function debug(msg) {
 }
 
 const CW20_BASE_WASM_LOCATION = "../cw20_base.wasm";
+const secondAnvilAddrETH = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
+const secondAnvilAddrSEI = "sei1cjzphr67dug28rw9ueewrqllmxlqe5f0awulvy";
+const thirdAnvilAddrETH = "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC";
+const thirdAnvilAddrSEI = "sei183zvmhdk4yq0526cthffncpaztay9yauk6y0ue"
+const secondAnvilPk = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"; // Replace with the spender's private key
+const secondAnvilWallet = new ethers.Wallet(secondAnvilPk);
+const secondAnvilSigner = secondAnvilWallet.connect(ethers.provider);
 
 describe("CW20ERC20WrapperTest", function () {
     let adminAddrSei;
@@ -24,20 +31,14 @@ describe("CW20ERC20WrapperTest", function () {
     let deployerAddrETH;
     let deployerAddrSEI;
     let cW20ERC20Wrapper;
-    // we just need an address that we know the private key of
-    let secondAnvilAddrETH = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
-    let secondAnvilAddrSEI = "sei1cjzphr67dug28rw9ueewrqllmxlqe5f0awulvy";
-    let thirdAnvilAddrETH = "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC";
-    let thirdAnvilAddrSEI = "sei183zvmhdk4yq0526cthffncpaztay9yauk6y0ue"
 
     before(async function () {
         let signers = await hre.ethers.getSigners();
         const deployer = signers[0];
         deployerAddrETH = await deployer.getAddress();
-        expect(deployerAddrETH).to.be.equal("0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52");
-        deployerAddrSEI = "sei1m9qugvk4h66p6hunfajfg96ysc48zeq4m0d82c";
-        console.log("deployer address (signers[0]) = ", deployerAddrETH);
-        console.log(`funding deployer address ${deployerAddrETH} wif some Sei...`);
+        deployerAddrSEI = await getSeiAddr(deployerAddrETH);
+        console.log("deployer address ETH = ", deployerAddrETH);
+        console.log("deployer address SEI = ", deployerAddrSEI);
 
         // fund addresses with SEI
         await fundwithSei(deployerAddrETH);
@@ -53,14 +54,11 @@ describe("CW20ERC20WrapperTest", function () {
         console.log("instantiating wasm...")
         contractAddress = await instantiateWasm(codeId, deployerAddrSEI);
         console.log(`CW20 Sei contract address: ${contractAddress}`)
-        // deploy the CW20ERC20Wrapper solidity contract with the contractAddress passed in
-        // let signers = await ethers.getSigners();
-        // owner = signers[0]
-    
         console.log(
             "Deploying contracts with the account:",
            deployerAddrETH 
         );
+
         await delay();
         const CW20ERC20Wrapper = await ethers.getContractFactory("CW20ERC20Wrapper");
         await delay();
@@ -90,7 +88,7 @@ describe("CW20ERC20WrapperTest", function () {
     });
 
     describe("allowance", function () {
-        it("allowance should work", async function () {
+        it("increase allowance should work", async function () {
             let owner = deployerAddrETH; // Replace with the owner's address
             let spender = deployerAddrETH; // Replace with the spender's address
             let allowance = await cW20ERC20Wrapper.allowance(owner, spender);
@@ -100,15 +98,28 @@ describe("CW20ERC20WrapperTest", function () {
     });
 
     describe("approve", function () {
-        it("approve should work", async function () {
-            let spender = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"; // just want a random address that is not deployer
+        it("increasing approval should work", async function () {
+            let spender = secondAnvilAddrETH;
             let amount = 1000000; // Replace with the amount to approve
-            console.log("deployerAddr = ", deployerAddrETH);
-            console.log("spender = ", spender);
             const tx = await cW20ERC20Wrapper.approve(spender, amount);
             await tx.wait();
-            let allowance = await cW20ERC20Wrapper.allowance(deployerAddrETH, spender);
-            await delay();
+            const allowance = await cW20ERC20Wrapper.allowance(deployerAddrETH, spender);
+            console.log(`Allowance for ${spender} from ${deployerAddrETH}: ${allowance}`);
+            expect(Number(allowance)).to.equal(amount);
+        });
+
+        it("decreasing approval should work", async function () {
+            let spender = secondAnvilAddrETH;
+            let amount = 10; // Replace with the amount to approve
+
+            // check that current allowance is greater than amount
+            const currentAllowance = await cW20ERC20Wrapper.allowance(deployerAddrETH, spender);
+            expect(Number(currentAllowance)).to.be.greaterThan(amount);
+
+            // decrease allowance
+            const tx = await cW20ERC20Wrapper.approve(spender, amount);
+            await tx.wait();
+            const allowance = await cW20ERC20Wrapper.allowance(deployerAddrETH, spender);
             console.log(`Allowance for ${spender} from ${deployerAddrETH}: ${allowance}`);
             expect(Number(allowance)).to.equal(amount);
         });
@@ -137,6 +148,15 @@ describe("CW20ERC20WrapperTest", function () {
             let diff = balanceOfRecipientAfter - balanceOfRecipientBefore;
             expect(diff).to.equal(amount);
         });
+
+        it("transfer should fail if sender has insufficient balance", async function () {
+            const balanceOfDeployer = await cW20ERC20Wrapper.balanceOf(deployerAddrETH);
+
+            const recipient = secondAnvilAddrETH;
+            const amount = balanceOfDeployer + BigInt(1); // This should be more than the sender's balance
+
+            await expect(cW20ERC20Wrapper.transfer(recipient, amount)).to.be.revertedWith("CosmWasm execute failed");
+        });
     });
 
     describe("transferFrom", function () {
@@ -156,8 +176,8 @@ describe("CW20ERC20WrapperTest", function () {
 
             // check allownce of deployer to spender
             console.log("transferFrom: checking allowance...")
-            const allowance = await cW20ERC20Wrapper.allowance(deployerAddrETH, spender);
-            expect(Number(allowance)).to.be.greaterThanOrEqual(amountToTransfer);
+            const allowanceBefore = await cW20ERC20Wrapper.allowance(deployerAddrETH, spender);
+            expect(Number(allowanceBefore)).to.be.greaterThanOrEqual(amountToTransfer);
 
             // check that spender has gas
             console.log("transferFrom: checking spender has gas...")
@@ -169,23 +189,12 @@ describe("CW20ERC20WrapperTest", function () {
             console.log("transferFrom: checking balanceOf recipient before transfer...")
             const balanceOfRecipientBefore = await cW20ERC20Wrapper.balanceOf(recipient);
 
-            // do transferFromReq (TODO: remove this later)
-            console.log("transferFrom: doing transferFromReq...")
-            const tfReq = await cW20ERC20Wrapper.transferFromReq(deployerAddrETH, recipient, amountToTransfer);
-            console.log("transferFrom: transferFromReq = ", tfReq);
-
             // check balanceOf sender (deployerAddr) to ensure it went down
             const balanceOfSenderBefore = await cW20ERC20Wrapper.balanceOf(deployerAddrETH);
 
             // have deployer transferFrom spender to recipient
             console.log("transferFrom: doing actual transferFrom...")
-            // const tfTx = await cW20ERC20Wrapper.transferFrom(deployerAddrETH, recipient, amountToTransfer, {from: spender});
-            const spenderPrivateKey = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"; // Replace with the spender's private key
-            const spenderWallet = new ethers.Wallet(spenderPrivateKey);
-            const spenderSigner = spenderWallet.connect(ethers.provider);
-            const tfTx = await cW20ERC20Wrapper.connect(spenderSigner).transferFrom(deployerAddrETH, recipient, amountToTransfer);
-            // const spenderSigner = ethers.provider.getSigner(spender);
-            // const tfTx = await cW20ERC20Wrapper.connect(spenderSigner).transferFrom(deployerAddrETH, recipient, amountToTransfer);
+            const tfTx = await cW20ERC20Wrapper.connect(secondAnvilSigner).transferFrom(deployerAddrETH, recipient, amountToTransfer);
             await tfTx.wait();
 
             // check balance diff to ensure transfer went through
@@ -198,18 +207,48 @@ describe("CW20ERC20WrapperTest", function () {
             const balanceOfSenderAfter = await cW20ERC20Wrapper.balanceOf(deployerAddrETH);
             const diff2 = balanceOfSenderBefore - balanceOfSenderAfter;
             expect(diff2).to.equal(amountToTransfer);
+
+            // check that allowance has gone down by amountToTransfer
+            const allowanceAfter = await cW20ERC20Wrapper.allowance(deployerAddrETH, spender);
+            expect(Number(allowanceBefore) - Number(allowanceAfter)).to.equal(amountToTransfer);
         });
 
-        it("transferFrom should not work if allowance is not enough", async function () {
-            // TODO
+        it("transferFrom should fail if sender has insufficient balance", async function() {
+            const fromAddrBalance = await cW20ERC20Wrapper.balanceOf(deployerAddrETH);
+            const spender = secondAnvilAddrETH;
+            const recipient = thirdAnvilAddrETH;
+
+            // try to transfer more than the balance
+            const amountToTransfer = fromAddrBalance + BigInt(1);
+
+            const tx = await cW20ERC20Wrapper.approve(spender, amountToTransfer);
+            await tx.wait();
+
+            await expect(cW20ERC20Wrapper.connect(secondAnvilSigner).transferFrom(deployerAddrETH, recipient, amountToTransfer))
+                .to.be.revertedWith("CosmWasm execute failed");
         });
+
+        it("transferFrom should fail if proper allowance not given", async function () {
+            const fromAddrBalance = await cW20ERC20Wrapper.balanceOf(deployerAddrETH);
+            const spender = secondAnvilAddrETH;
+            const recipient = thirdAnvilAddrETH;
+
+            const amountToTransfer = 1
+
+            // set approval to 0
+            const tx = await cW20ERC20Wrapper.approve(spender, 0);
+            await tx.wait();
+
+            await expect(cW20ERC20Wrapper.connect(secondAnvilSigner).transferFrom(deployerAddrETH, recipient, amountToTransfer))
+                .to.be.revertedWith("CosmWasm execute failed");
+        });
+
     });
 });
 
-async function printCWState(cwAddress) {
-    // Wrap the exec function in a Promise
-    await new Promise((resolve, reject) => {
-        exec(`seid tx evm send ${deployerAddress} 10000000000000000000 --from admin`, (error, stdout, stderr) => {
+async function getSeiAddr(ethAddr) {
+    let seiAddr = await new Promise((resolve, reject) => {
+        exec(`seid q evm sei-addr ${ethAddr}`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 reject(error);
@@ -221,10 +260,10 @@ async function printCWState(cwAddress) {
                 return;
             }
             debug(`stdout: ${stdout}`)
-            resolve();
+            resolve(stdout.trim());
         });
     });
-
+    return seiAddr.replace("sei_address: ", "");;
 }
 
 async function fundwithSei(deployerAddress) {
@@ -246,8 +285,6 @@ async function fundwithSei(deployerAddress) {
         });
     });
 }
-
-
 
 async function deployWasm() {
     // Wrap the exec function in a Promise
@@ -309,7 +346,6 @@ async function getAdmin() {
 async function instantiateWasm(codeId, adminAddr) {
     // Wrap the exec function in a Promise
     console.log("instantiateWasm: will fund admin addr = ", adminAddr);
-    let secondAnvilAddrSEI = "sei1cjzphr67dug28rw9ueewrqllmxlqe5f0awulvy";
     console.log("instantiateWasm: will fund secondAnvilAddr = ", secondAnvilAddrSEI);
     let contractAddress = await new Promise((resolve, reject) => {
         const cmd = `seid tx wasm instantiate ${codeId} '{ "name": "BTOK", "symbol": "BTOK", "decimals": 6, "initial_balances": [ { "address": "${adminAddr}", "amount": "1000000" }, { "address": "${secondAnvilAddrSEI}", "amount": "1000000"} ], "mint": { "minter": "${adminAddr}", "cap": "99900000000" } }' --label cw20-test --admin ${adminAddr} --from admin --gas=5000000 --fees=1000000usei -y --broadcast-mode block`;
