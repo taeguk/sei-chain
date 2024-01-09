@@ -19,6 +19,8 @@ function debug(msg) {
 }
 
 const CW20_BASE_WASM_LOCATION = "wasm/cw20_base.wasm";
+const deployerAddrETH = "0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52";
+const deployerAddrSEI = "sei1m9qugvk4h66p6hunfajfg96ysc48zeq4m0d82c";
 const secondAnvilAddrETH = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
 const secondAnvilAddrSEI = "sei1cjzphr67dug28rw9ueewrqllmxlqe5f0awulvy";
 const thirdAnvilAddrETH = "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC";
@@ -30,15 +32,13 @@ const secondAnvilSigner = secondAnvilWallet.connect(ethers.provider);
 describe("CW20ERC20WrapperTest", function () {
     let adminAddrSei;
     let contractAddress;
-    let deployerAddrETH;
-    let deployerAddrSEI;
     let cW20ERC20Wrapper;
 
     before(async function () {
         let signers = await hre.ethers.getSigners();
         const deployer = signers[0];
-        deployerAddrETH = await deployer.getAddress();
-        deployerAddrSEI = await getSeiAddr(deployerAddrETH);
+        // we just need a way to get the deployerAddrSEI and it's currently being hardcoded
+        expect(await deployer.getAddress()).to.equal(deployerAddrETH);
         console.log("deployer address ETH = ", deployerAddrETH);
         console.log("deployer address SEI = ", deployerAddrSEI);
 

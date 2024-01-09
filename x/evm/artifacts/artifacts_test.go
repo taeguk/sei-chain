@@ -9,7 +9,6 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/sei-protocol/sei-chain/app"
 	testkeeper "github.com/sei-protocol/sei-chain/testutil/keeper"
 	"github.com/sei-protocol/sei-chain/x/evm/ante"
 	"github.com/sei-protocol/sei-chain/x/evm/artifacts"
@@ -29,7 +28,7 @@ func TestSimple(t *testing.T) {
 	args, err := abi.Pack("", "test")
 	contractData := append(bytecode, args...)
 
-	testApp := app.Setup(false, true)
+	testApp := testkeeper.EVMTestApp
 	ctx := testApp.NewContext(false, tmtypes.Header{}).WithBlockHeight(2)
 	k := &testApp.EvmKeeper
 	privKey := testkeeper.MockPrivateKey()
@@ -66,7 +65,7 @@ func TestSimple(t *testing.T) {
 	msgServer := keeper.NewMsgServerImpl(k)
 
 	// Deploy Simple Storage contract
-	ante.Preprocess(ctx, req, k.GetParams(ctx), k.DecrementPendingTxCount)
+	ante.Preprocess(ctx, req, k.GetParams(ctx))
 	res, err := msgServer.EVMTransaction(sdk.WrapSDKContext(ctx), req)
 	require.Nil(t, err)
 	require.Empty(t, res.VmError)
@@ -94,7 +93,7 @@ func TestSimple(t *testing.T) {
 	require.Nil(t, err)
 	req, err = types.NewMsgEVMTransaction(txwrapper)
 	require.Nil(t, err)
-	ante.Preprocess(ctx, req, k.GetParams(ctx), k.DecrementPendingTxCount)
+	ante.Preprocess(ctx, req, k.GetParams(ctx))
 	res, err = msgServer.EVMTransaction(sdk.WrapSDKContext(ctx), req)
 	require.Nil(t, err)
 	require.Empty(t, res.VmError)
